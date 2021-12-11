@@ -1,0 +1,23 @@
+{
+    "name": "base-react-app",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "serve": "webpack serve --mode development --color",
+        "build": "webpack --mode development --color",
+        "deploy": "webpack --mode production --color",
+        "lint": "eslint src/**/*.js src/**/*.jsx"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    },
+    "devDependencies": {
+        "webpack": "^5.43.0",
+        "webpack-cli": "^4.7.2",
+        "webpack-dev-server": "^3.11.2"
+    }
+}
