@@ -1,13 +1,15 @@
 import React, { ReactElement } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import BoardPage from "./pages/BoardPage";
 import IndexPage from "./pages/IndexPage";
 
 export default function App() : ReactElement {
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<IndexPage />} />
-            </Routes>
+            <Switch>
+                <Route path="/b/:id" component={BoardPage} />
+                <Route path="/" component={IndexPage} />
+            </Switch>
         </BrowserRouter>
     );
 }

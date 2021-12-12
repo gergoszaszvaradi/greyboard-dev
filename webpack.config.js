@@ -16,10 +16,22 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.tsx?$/i,
                 use: "ts-loader",
                 exclude: "/node_modules/"
-            }
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    "style-loader",
+                    "css-loader",
+                    "sass-loader",
+                ],
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                type: "asset",
+            },
         ],
     },
     plugins: [
@@ -31,6 +43,8 @@ module.exports = {
     devtool: "source-map",
     devServer: {
         port: 3000,
-        watchContentBase: true,
+        historyApiFallback: {
+            index: '/',
+        },
     },
 };

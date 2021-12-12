@@ -41,7 +41,7 @@ export default class Logger {
     static debug(message : string, data? : any) : void {
         if (!this.config.logLevel.has(LogLevel.Debug)) return;
         if (data) {
-            console.debug(`DEBUG | ${this.getSimpleStackTrace()[3]} | ${message} | data: ${data}`);
+            console.debug(`DEBUG | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
             console.debug(`DEBUG | ${this.getSimpleStackTrace()[3]} | ${message}`);
         }
@@ -50,7 +50,7 @@ export default class Logger {
     static info(message : string, data? : any) : void {
         if (!this.config.logLevel.has(LogLevel.Info)) return;
         if (data) {
-            console.log(`INFO | ${this.getSimpleStackTrace()[3]} | ${message} | data: ${data}`);
+            console.log(`INFO | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
             console.log(`INFO | ${this.getSimpleStackTrace()[3]} | ${message}`);
         }
@@ -59,7 +59,7 @@ export default class Logger {
     static warn(message : string, data? : any) : void {
         if (!this.config.logLevel.has(LogLevel.Warning)) return;
         if (data) {
-            console.warn(`WARN | ${this.getSimpleStackTrace()[3]} | ${message} | data: ${data}`);
+            console.warn(`WARN | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
             console.warn(`WARN | ${this.getSimpleStackTrace()[3]} | ${message}`);
         }
@@ -68,7 +68,7 @@ export default class Logger {
     static error(message : string, data? : any) : void {
         if (!this.config.logLevel.has(LogLevel.Error)) return;
         if (data) {
-            console.error(`ERROR | ${this.getSimpleStackTrace()[3]} | ${message} | data: ${data}`);
+            console.error(`ERROR | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
             console.error(`ERROR | ${this.getSimpleStackTrace()[3]} | ${message}`);
         }

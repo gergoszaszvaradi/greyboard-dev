@@ -1,0 +1,35 @@
+@import "./layout.scss";
+
+$color-bright: white;
+$color-dark: #222222;
+$color-primary: #fc8210;
+$color-primary-dark: #b85900;
+$color-secondary: #686868;
+$color-secondary-dark: #444444;
+$color-text: #111111;
+$color-text-on-dark: white;
+$color-shadow: #00000033;
+$color-opaque: #0000001a;
+
+@mixin raise-on-hover($col : $color-secondary-dark) {
+    transform: translateY(0);
+    transition: box-shadow 0.2s, transform 0.2s;
+
+    &:hover {
+        box-shadow: 0 5px 0 0 $col;
+        transform: translateY(-5px);
+    }
+}
+
+@mixin show-tooltip-on-hover() {
+    &:hover > .tooltip {
+        animation: tooltip-show-anim 0.2s linear 0.5s 1 forwards;
+    }
+}
+
+@mixin small-uppercase-text() {
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}

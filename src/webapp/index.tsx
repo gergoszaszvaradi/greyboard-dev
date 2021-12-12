@@ -5,6 +5,8 @@ import Logger, { LogLevel } from "../common/utils/logger";
 
 import App from "./App";
 
+import "./assets/css/App.scss";
+
 Logger.init({
     logLevel: new BitFlag(LogLevel.All),
 });
