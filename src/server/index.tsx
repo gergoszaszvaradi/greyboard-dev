@@ -2,11 +2,10 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import Logger, { LogLevel } from "../common/utils/logger";
-import BitFlag from "../common/utils/bitflag";
 
 dotenv.config();
 Logger.init({
-    logLevel: new BitFlag(LogLevel.All),
+    logLevel: LogLevel.All,
 });
 const PORT = process.env.port || 5000;
 const WEBAPP_DIR = path.join(process.cwd(), "dist", "webapp");

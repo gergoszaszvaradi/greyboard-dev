@@ -24,29 +24,6 @@ body {
     margin: 15vh 0 1rem 0;
 }
 
-.rounded-button {
-    display: block;
-    border: 0;
-    outline: 0;
-    background-color: var(--color-secondary);
-    color: $color-text-on-dark;
-    font-size: 1rem;
-    text-decoration: none;
-    padding: 5px 20px;
-    border-radius: 999px;
-    cursor: pointer;
-    @include raise-on-hover();
-
-    &.big {
-        padding: 10px 20px;
-    }
-
-    &.primary {
-        background-color: $color-primary;
-        @include raise-on-hover($color-primary-dark);
-    }
-}
-
 .button-divider {
     margin: 0 1rem;
     color: $color-text-on-dark;

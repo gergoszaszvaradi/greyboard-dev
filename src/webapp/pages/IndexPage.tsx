@@ -1,5 +1,5 @@
 import React, { Component, ReactElement } from "react";
-import Button from "../components/ui/Button";
+import { Button } from "../components/ui/Button";
 import Logger from "../../common/utils/logger";
 
 export default class IndexPage extends Component {

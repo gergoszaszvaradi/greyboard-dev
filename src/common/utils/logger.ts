@@ -1,20 +1,19 @@
-import BitFlag from "./bitflag";
-
 /* eslint-disable no-console */
+
 export enum LogLevel {
     Debug = 0,
     Info = 1,
     Warning = 2,
     Error = 4,
-    All = 0xFFFF
+    All = 0xFFFF,
 }
 
 export type LoggerConfig = {
-    logLevel : BitFlag;
+    logLevel : LogLevel;
 };
 
 const DEFAULT_CONFIG : LoggerConfig = {
-    logLevel: new BitFlag(0xFFFF),
+    logLevel: LogLevel.All,
 };
 
 export default class Logger {
@@ -39,7 +38,7 @@ export default class Logger {
     }
 
     static debug(message : string, data? : any) : void {
-        if (!this.config.logLevel.has(LogLevel.Debug)) return;
+        if ((this.config.logLevel & LogLevel.Debug) !== LogLevel.Debug) return;
         if (data) {
             console.debug(`DEBUG | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
@@ -48,7 +47,7 @@ export default class Logger {
     }
 
     static info(message : string, data? : any) : void {
-        if (!this.config.logLevel.has(LogLevel.Info)) return;
+        if ((this.config.logLevel & LogLevel.Info) !== LogLevel.Info) return;
         if (data) {
             console.log(`INFO | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
@@ -57,7 +56,7 @@ export default class Logger {
     }
 
     static warn(message : string, data? : any) : void {
-        if (!this.config.logLevel.has(LogLevel.Warning)) return;
+        if ((this.config.logLevel & LogLevel.Warning) !== LogLevel.Warning) return;
         if (data) {
             console.warn(`WARN | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {
@@ -66,7 +65,7 @@ export default class Logger {
     }
 
     static error(message : string, data? : any) : void {
-        if (!this.config.logLevel.has(LogLevel.Error)) return;
+        if ((this.config.logLevel & LogLevel.Error) !== LogLevel.Error) return;
         if (data) {
             console.error(`ERROR | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
         } else {

@@ -37,7 +37,7 @@ module.exports = {
     plugins: [
         new DotEnv(),
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, "src/webapp/assets/index.html"),
+            template: path.join(__dirname, "src/webapp/index.html"),
         })
     ],
     devtool: "source-map",

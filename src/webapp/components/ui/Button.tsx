@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import "./ui.scss";
+
 interface ButtonProps {
     primary? : boolean;
     size? : "small"|"big";
@@ -8,7 +10,7 @@ interface ButtonProps {
     onClick? : React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const Button : React.FC<ButtonProps> = ({
+export const Button : React.FC<ButtonProps> = ({
     primary,
     size,
     to,
@@ -17,11 +19,11 @@ const Button : React.FC<ButtonProps> = ({
 }) => {
     if (to === undefined) {
         return (
-            <button type="button" className={`rounded-button ${size} ${primary ? "primary" : ""}`} onClick={onClick}>{children}</button>
+            <button type="button" className={`button ${size} ${primary ? "primary" : ""}`} onClick={onClick}>{children}</button>
         );
     }
     return (
-        <Link to={to} className={`rounded-button ${size} ${primary ? "primary" : ""}`}>{children}</Link>
+        <Link to={to} className={`button ${size} ${primary ? "primary" : ""}`}>{children}</Link>
     );
 };
 Button.defaultProps = {
@@ -30,5 +32,3 @@ Button.defaultProps = {
     to: undefined,
     onClick: undefined,
 };
-
-export default Button;
