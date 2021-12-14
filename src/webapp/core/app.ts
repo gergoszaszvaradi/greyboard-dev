@@ -1,21 +1,36 @@
 import Size from "../../common/utils/size";
+import createDelegate from "../../common/utils/delegate";
 import { BoardActions } from "../stores/BoardStore";
 import Graphics from "./graphics";
 
-export default class Application {
-    public size : Size;
-    public graphics : Graphics;
+class Application {
+    public size : Size = new Size();
+    // public graphics : Graphics;
 
-    constructor() {
+    public onResize = createDelegate<[size: Size]>();
+
+    start() : boolean {
         this.size.width = window.innerWidth;
         this.size.height = window.innerHeight;
 
+        // this.graphics = new Graphics();
+
         window.addEventListener("resize", () => this.resize(window.innerWidth, window.innerHeight));
+
+        window.addEventListener("mousedown", (e) => e);
+
+        return true;
     }
+
+    stop() : void {}
 
     resize(width : number, height : number) : void {
         this.size.width = width;
         this.size.height = height;
-        BoardActions.setBoardSize(this.size);
+        this.onResize(this.size);
+        // BoardActions.setBoardSize(this.size);
     }
 }
+
+const app = new Application();
+export default app;
