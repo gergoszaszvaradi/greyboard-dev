@@ -1,5 +1,6 @@
 import Reflux from "reflux";
 import Size from "../../common/utils/size";
+import app from "../core/app";
 import { createRefluxActions } from "../utils/reflux";
 
 export const BoardActions = createRefluxActions(class {
@@ -15,6 +16,8 @@ export default class BoardStore extends Reflux.Store {
             size: new Size(0, 0),
         };
         this.listenables = BoardActions;
+
+        app.onResize.add((size) => this.onSetBoardSize(size));
     }
 
     onSetBoardId(id : string) : void {
