@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist",
+        "target": "ES6",
+        "module": "CommonJS",
+        "jsx": "react",
+        "strict": true,
+        "alwaysStrict": false,
+        "noImplicitAny": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["src/common/**/*", "src/webapp/core/**/*"],
+    "exclude": ["dist/", "node_modules/"],
+}

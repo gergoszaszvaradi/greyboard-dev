@@ -1,0 +1,8 @@
+@import "src/webapp/global.scss";
+
+.toolbar-text {
+    @include small-uppercase-text();
+    font-size: 0.6rem;
+    text-align: center;
+    opacity: 0.5;
+}

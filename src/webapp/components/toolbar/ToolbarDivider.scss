@@ -1,0 +1,17 @@
+@import "src/webapp/global.scss";
+
+.toolbar-divider {
+    background-color: $color-shadow;
+
+    &.horizontal {
+        width: 20px;
+        height: 1px;
+        margin: 5px 10px;
+    }
+
+    &.vertical {
+        height: 20px;
+        width: 1px;
+        margin: 10px 5px;
+    }
+}

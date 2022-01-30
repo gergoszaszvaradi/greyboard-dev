@@ -1,0 +1,35 @@
+@import "src/webapp/global.scss";
+
+.toolbar {
+    display: inline-flex;
+    background-color: $color-bright;
+    border-radius: $border-radius;
+
+    &.horizontal {
+        flex-direction: row;
+
+        & > .toolbar-button:first-child {
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
+        }
+
+        & > .toolbar-button:last-child {
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+    }
+
+    &.vertical {
+        flex-direction: column;
+
+        & > .toolbar-button:first-child {
+            border-top-left-radius: $border-radius;
+            border-top-right-radius: $border-radius;
+        }
+
+        & > .toolbar-button:last-child {
+            border-bottom-left-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+    }
+}

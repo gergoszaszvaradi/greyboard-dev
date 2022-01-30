@@ -38,6 +38,7 @@ module.exports = {
         new DotEnv(),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src/webapp/index.html"),
+            inject: false,
         })
     ],
     devtool: "source-map",

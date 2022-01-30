@@ -1,7 +1,17 @@
 .ui {
+    display: flex;
+    flex-direction: column;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+
+    & > *:not(:last-child) {
+        margin-bottom: 20px;
+    }
+
+    .middle-bar {
+        flex-grow: 1;
+    }
 }

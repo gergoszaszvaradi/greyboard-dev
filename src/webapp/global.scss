@@ -11,6 +11,8 @@ $color-text-on-dark: white;
 $color-shadow: #00000033;
 $color-opaque: #0000001a;
 
+$border-radius: 5px;
+
 @mixin raise-on-hover($col : $color-secondary-dark) {
     transform: translateY(0);
     transition: box-shadow 0.2s, transform 0.2s;

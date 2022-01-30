@@ -1,0 +1,76 @@
+@import "src/webapp/global.scss";
+
+.tooltip {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    background-color: $color-bright;
+    color: $color-text;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px $color-shadow;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    padding: 7px 0;
+    @include small-uppercase-text();
+    line-height: 1.25rem;
+    pointer-events: none;
+    opacity: 0;
+    animation: none;
+
+    &::before {
+        content: "";
+        position: absolute;
+        border: 5px solid transparent;
+        width: 0;
+        height: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    span {
+        margin: 0 10px;
+    }
+
+    &.bottom {
+        margin-top: 7px;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        &::before {
+            top: -5px;
+            left: 50%;
+            border-bottom-color: $color-bright !important;
+        }
+    }
+
+    &.right {
+        margin-left: 7px;
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+
+        &::before {
+            top: 50%;
+            left: -5px;
+            border-right-color: $color-bright !important;
+        }
+    }
+
+    .tooltip-shortcut {
+        background-color: $color-opaque;
+        border-radius: 3px;
+        padding: 0 5px;
+        margin-right: 7px;
+    }
+}
+
+@keyframes tooltip-show-anim {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

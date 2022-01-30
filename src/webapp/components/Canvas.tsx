@@ -11,8 +11,6 @@ export default class Canvas extends Reflux.Component {
         this.store = BoardStore;
     }
 
-    // componentDidMount(): void {}
-
     render() : React.ReactNode {
         return (
             <canvas

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import "./ui.scss";
+import { className } from "../../utils/format";
 
 interface ButtonProps {
     primary? : boolean;
@@ -19,11 +20,11 @@ export const Button : React.FC<ButtonProps> = ({
 }) => {
     if (to === undefined) {
         return (
-            <button type="button" className={`button ${size} ${primary ? "primary" : ""}`} onClick={onClick}>{children}</button>
+            <button type="button" className={`button ${size} ${className(primary, "primary")}`} onClick={onClick}>{children}</button>
         );
     }
     return (
-        <Link to={to} className={`button ${size} ${primary ? "primary" : ""}`}>{children}</Link>
+        <Link to={to} className={`button ${size} ${className(primary, "primary")}`}>{children}</Link>
     );
 };
 Button.defaultProps = {
