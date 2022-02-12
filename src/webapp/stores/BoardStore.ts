@@ -1,30 +1,28 @@
-import Reflux from "reflux";
 import Size from "../../common/utils/geometry/size";
 import app from "../core/app";
-import createRefluxActions from "../utils/reflux";
+import { createActions, createStore } from "../utils/flux";
 
-export const BoardActions = createRefluxActions(class {
-    setBoardId(id : string) : void {}
-    setBoardSize(size : Size) : void {}
+interface BoardState {
+    id : string;
+    size : Size;
+}
+
+export const BoardStore = createStore<BoardState>({
+    id: "",
+    size: new Size(0, 0),
 });
 
-export default class BoardStore extends Reflux.Store {
+class BoardActions {
     constructor() {
-        super();
-        this.state = {
-            id: "",
-            size: new Size(0, 0),
-        };
-        this.listenables = BoardActions;
-
-        app.onResize.add((size) => this.onSetBoardSize(size));
+        app.onResize.add((size) => this.setBoardSize(size));
     }
 
-    onSetBoardId(id : string) : void {
-        this.setState({ ...this.state, id });
+    setBoardId(id : string) : void {
+        BoardStore.setState({ ...BoardStore.state, id });
     }
 
-    onSetBoardSize(size : Size) : void {
-        this.setState({ ...this.state, size });
+    setBoardSize(size : Size) : void {
+        BoardStore.setState({ ...BoardStore.state, size });
     }
 }
+export const BoardAction = createActions<BoardActions, BoardState>(BoardActions, BoardStore);

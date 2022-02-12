@@ -1,39 +1,37 @@
-import Reflux from "reflux";
 import Color from "../../common/utils/color";
 import app from "../core/app";
 import { Tool } from "../core/tool";
-import createRefluxActions from "../utils/reflux";
+import { createActions, createStore } from "../utils/flux";
 
-export const ToolboxActions = createRefluxActions(class {
-    setSelectedTool(tool : Tool) : void {}
-    setSelectedColor(color : Color) : void {}
-    setSelectedWeight(weight : number) : void {}
+interface ToolboxState {
+    selectedTool: Tool | null;
+    selectedColor: Color | null;
+    selectedWeight: number | null;
+}
+
+export const ToolboxStore = createStore<ToolboxState>({
+    selectedTool: null,
+    selectedColor: null,
+    selectedWeight: null,
 });
 
-export default class ToolboxStore extends Reflux.Store {
+class ToolboxActions {
     constructor() {
-        super();
-        this.state = {
-            selectedTool: null,
-            selectedColor: null,
-            selectedWeight: null,
-        };
-        this.listenables = ToolboxActions;
-
-        app.toolbox.onToolSelected.add((tool) => this.onSetSelectedTool(tool));
-        app.toolbox.onColorSelected.add((color) => this.onSetSelectedColor(color));
-        app.toolbox.onWeightSelected.add((weight) => this.onSetSelectedWeight(weight));
+        app.toolbox.onToolSelected.add((tool) => this.setSelectedTool(tool));
+        app.toolbox.onColorSelected.add((color) => this.setSelectedColor(color));
+        app.toolbox.onWeightSelected.add((weight) => this.setSelectedWeight(weight));
     }
 
-    onSetSelectedTool(tool : Tool) : void {
-        this.setState({ ...this.state, selectedTool: tool });
+    setSelectedTool(tool : Tool) : void {
+        ToolboxStore.setState({ ...ToolboxStore.state, selectedTool: tool });
     }
 
-    onSetSelectedColor(color : Color) : void {
-        this.setState({ ...this.state, selectedColor: color });
+    setSelectedColor(color : Color) : void {
+        ToolboxStore.setState({ ...ToolboxStore.state, selectedColor: color });
     }
 
-    onSetSelectedWeight(weigth : number) : void {
-        this.setState({ ...this.state, selectedWeight: weigth });
+    setSelectedWeight(weight : number) : void {
+        ToolboxStore.setState({ ...ToolboxStore.state, selectedWeight: weight });
     }
 }
+export const ToolboxAction = createActions<ToolboxActions, ToolboxState>(ToolboxActions, ToolboxStore);
