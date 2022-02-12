@@ -14,6 +14,6 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["src/common/**/*", "src/server/**/*"],
-    "exclude": ["dist/", "node_modules/", "src/webapp"],
+    "include": ["src/**/*"],
+    "exclude": ["dist/", "node_modules/"],
 }

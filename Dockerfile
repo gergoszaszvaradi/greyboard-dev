@@ -1,10 +1,9 @@
 FROM node:latest as nodejs
 
-WORKDIR /usr/src/webapp
+WORKDIR /usr/src/greyboard
 COPY package.json .
-COPY package-lock.json .
-RUN npm i --production
+RUN yarn install --production --no-lockfile
 COPY dist .
 
 EXPOSE 5000
-CMD ["npm", "run", "start"]
+CMD ["yarn", "start"]

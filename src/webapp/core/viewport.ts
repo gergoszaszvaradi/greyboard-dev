@@ -1,4 +1,4 @@
-import Point from "../../common/utils/point";
+import Point from "../../common/utils/geometry/point";
 
 export default class Viewport {
     public position : Point = new Point();

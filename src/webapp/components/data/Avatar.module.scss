@@ -1,0 +1,27 @@
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: $color-bright;
+    border: 0;
+    outline: 0;
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px $color-shadow;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    &.local {
+        box-shadow: 0 0 0 2px $color-primary;
+        cursor: default;
+    }
+    &.inactive {
+        opacity: 0.5;
+    }
+
+    @include show-tooltip-on-hover();
+}

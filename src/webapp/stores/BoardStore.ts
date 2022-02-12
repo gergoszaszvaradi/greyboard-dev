@@ -1,7 +1,7 @@
 import Reflux from "reflux";
-import Size from "../../common/utils/size";
+import Size from "../../common/utils/geometry/size";
 import app from "../core/app";
-import { createRefluxActions } from "../utils/reflux";
+import createRefluxActions from "../utils/reflux";
 
 export const BoardActions = createRefluxActions(class {
     setBoardId(id : string) : void {}

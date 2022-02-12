@@ -4,6 +4,7 @@
     display: inline-flex;
     background-color: $color-bright;
     border-radius: $border-radius;
+    pointer-events: all;
 
     &.horizontal {
         flex-direction: row;

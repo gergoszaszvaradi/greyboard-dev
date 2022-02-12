@@ -1,7 +1,10 @@
 import { mdiPencil } from "@mdi/js";
 import { Tool } from "../tool";
-import Point from "../../../common/utils/point";
-import app, { PointerEvent } from "../app";
+import Point from "../../../common/utils/geometry/point";
+import app from "../app";
+import { PointerEvent } from "../input";
+import ClientBoardPath from "../board/path";
+import Id from "../../../common/utils/id";
 
 export default class Pencil implements Tool {
     private buffer : Point[] = [];
@@ -14,20 +17,24 @@ export default class Pencil implements Tool {
     ) {}
 
     onSelected() : void {
-        this.buffer.splice(0, this.buffer.length);
+        this.clearBuffer();
     }
 
     onDeselected() : void {
-        this.buffer.splice(0, this.buffer.length);
+        this.clearBuffer();
     }
 
     onActionStart(e : PointerEvent) : void {
-        this.buffer.splice(0, this.buffer.length);
-        this.buffer.push(app.graphics.viewport.screenToViewport(e.position));
+        this.clearBuffer();
+        this.buffer.push(app.graphics.viewport.screenToViewport(e.getPosition()));
     }
 
     onPointerMove(e : PointerEvent) : void {
-        // throw new Error("Method not implemented.");
+
+    }
+
+    onActionPointerMove(e : PointerEvent) : void {
+        this.buffer.push(app.graphics.viewport.screenToViewport(e.getPosition()));
     }
 
     onFrameUpdate() : void {
@@ -35,10 +42,24 @@ export default class Pencil implements Tool {
     }
 
     onActionEnd(e : PointerEvent) : void {
-        // throw new Error("Method not implemented.");
+        if (this.buffer.length === 0) { return; }
+
+        // todo: create item with network id
+        const path = new ClientBoardPath(new Id(), this.buffer, app.toolbox.selectedColor, app.toolbox.selectedWeight);
+        path.optimize();
+        path.calculateRect();
+        path.normalize();
+
+        app.board.add([path]);
+        this.clearBuffer();
     }
 
     onDraw() : void {
-        // throw new Error("Method not implemented.");
+        app.graphics.stroke(app.toolbox.selectedColor, app.toolbox.selectedWeight);
+        app.graphics.curve(this.buffer);
+    }
+
+    private clearBuffer() : void {
+        this.buffer.splice(0, this.buffer.length);
     }
 }

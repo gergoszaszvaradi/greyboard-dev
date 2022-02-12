@@ -26,6 +26,8 @@ export default class Canvas extends Reflux.Component {
                 onTouchMove={(e) => app.pointerMove(e.nativeEvent)}
                 onMouseUp={(e) => app.pointerUp(e.nativeEvent)}
                 onTouchEnd={(e) => app.pointerUp(e.nativeEvent)}
+                onKeyDown={(e) => app.keyDown(e.nativeEvent)}
+                onKeyUp={(e) => app.keyUp(e.nativeEvent)}
             />
         );
     }

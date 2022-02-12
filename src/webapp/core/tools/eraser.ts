@@ -1,7 +1,8 @@
 import { mdiEraser } from "@mdi/js";
 import { Tool } from "../tool";
-import Point from "../../../common/utils/point";
-import app, { PointerEvent } from "../app";
+import Point from "../../../common/utils/geometry/point";
+import app from "../app";
+import { PointerEvent } from "../input";
 
 export default class Eraser implements Tool {
     private tail : Point[] = [];
@@ -23,7 +24,15 @@ export default class Eraser implements Tool {
 
     onActionStart(e : PointerEvent) : void {
         this.tail.splice(0, this.tail.length);
-        this.tail.push(app.graphics.viewport.screenToViewport(e.position));
+        this.tail.push(app.graphics.viewport.screenToViewport(e.getPosition()));
+    }
+
+    onActionPointerMove(e: PointerEvent): void {
+
+    }
+
+    onActionEnd(e : PointerEvent) : void {
+        // throw new Error("Method not implemented.");
     }
 
     onPointerMove(e : PointerEvent) : void {
@@ -31,10 +40,6 @@ export default class Eraser implements Tool {
     }
 
     onFrameUpdate() : void {
-        // throw new Error("Method not implemented.");
-    }
-
-    onActionEnd(e : PointerEvent) : void {
         // throw new Error("Method not implemented.");
     }
 

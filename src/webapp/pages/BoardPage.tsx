@@ -10,13 +10,12 @@ import Toolbar from "../components/toolbar/Toolbar";
 import ToolbarButton from "../components/toolbar/ToolbarButton";
 import ToolbarText from "../components/toolbar/ToolbarText";
 import BoardStore, { BoardActions } from "../stores/BoardStore";
-import app, { shortcutAsString } from "../core/app";
-
+import app from "../core/app";
+import { shortcutAsString } from "../core/input";
 import "./pages.scss";
 import ToolbarInput from "../components/toolbar/ToolbarInput";
 import ToolbarDivider from "../components/toolbar/ToolbarDivider";
-import Tooltip from "../components/ui/Tooltip";
-import BoardUsers from "../components/BoardUsers";
+import Tooltip from "../components/data/Tooltip";
 import { Tool, ToolCategory } from "../core/tool";
 import ToolboxStore from "../stores/ToolboxStore";
 
@@ -46,24 +45,20 @@ export default class BoardPage extends Reflux.Component {
     }
 
     render() : ReactElement {
-        const toolBarButtonsFromTools = (tools : Tool[]) : ReactElement[] => {
-            return tools.map((tool) => {
-                return (
-                    <ToolbarButton
-                        key={tool.name}
-                        active={app.toolbox.selectedTool === tool}
-                        icon={tool.icon}
-                        tooltip={(
-                            <Tooltip
-                                text={tool.name}
-                                shortcut={shortcutAsString(tool.shortcut)}
-                            />
-                        )}
-                        onClick={() => app.toolbox.select(tool)}
+        const toolBarButtonsFromTools = (tools : Tool[]) : ReactElement[] => tools.map((tool) => (
+            <ToolbarButton
+                key={tool.name}
+                active={app.toolbox.selectedTool === tool}
+                icon={tool.icon}
+                tooltip={(
+                    <Tooltip
+                        text={tool.name}
+                        shortcut={shortcutAsString(tool.shortcut)}
                     />
-                );
-            });
-        };
+                )}
+                onClick={() : void => app.toolbox.selectTool(tool)}
+            />
+        ));
 
         return (
             <>
@@ -79,14 +74,13 @@ export default class BoardPage extends Reflux.Component {
                             <ToolbarButton icon={mdiUndo} tooltip={<Tooltip text="Undo" shortcut="CTRL + Z" orientation="bottom" />} />
                             <ToolbarButton icon={mdiRedo} tooltip={<Tooltip text="Redo" shortcut="CTRL + SHIFT + Z" orientation="bottom" />} />
                         </Toolbar>
-                        <BoardUsers users={[]} />
                     </div>
                     <div className="middle-bar">
                         <Toolbar orientation="vertical">
                             {Array.from(this.toolHierarchy.entries()).map(([category, tools]) => {
-                                if (category) {
+                                if (category)
                                     return toolBarButtonsFromTools(tools);
-                                }
+
                                 return toolBarButtonsFromTools(tools);
                             })}
                         </Toolbar>
