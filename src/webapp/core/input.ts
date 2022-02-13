@@ -47,7 +47,6 @@ export class PointerEvent {
 
     constructor(e : MouseEvent | TouchEvent, public state : EventActionState) {
         if (e instanceof MouseEvent) {
-            // this.prevPositions = [new Point(e.pageX - e.movementX, e.pageY - e.movementY)];
             this.positions = [new Point(e.pageX, e.pageY)];
             this.button = e.button;
         } else {

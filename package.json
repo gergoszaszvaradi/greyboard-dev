@@ -8,8 +8,8 @@
         "webapp:build": "webpack --config webpack.config.js --color",
         "build": "npm run server:build && npm run webapp:build",
         "start": "node dist/server/index.js",
-        "lint": "eslint src/**/*",
-        "lint-fix": "eslint src/**/* --fix",
+        "lint": "eslint 'src/**/*'",
+        "lint-fix": "eslint 'src/**/*' --fix",
         "serve": "webpack serve --color",
         "test-isolation": "tsc -p tsconfig.test.json"
     },

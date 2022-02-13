@@ -7,7 +7,7 @@ dotenv.config();
 Logger.init({
     logLevel: Number(process.env.LOG_LEVEL) || LogLevel.All,
 });
-const PORT = process.env.port || 5000;
+const PORT = process.env.PORT || 5000;
 const WEBAPP_DIR = path.join(process.cwd(), "dist", "webapp");
 
 const app = express();
@@ -18,5 +18,5 @@ app.get("/*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    Logger.info(`Listening on http://localhost:${PORT}`);
+    Logger.info(`Listening on ${PORT}`);
 });
