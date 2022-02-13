@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 export enum LogLevel {
     Debug = 0,
     Info = 1,
@@ -8,16 +6,16 @@ export enum LogLevel {
     All = 0xFFFF,
 }
 
-export type LoggerConfig = {
+export interface LoggerConfig {
     logLevel : LogLevel;
-};
+}
 
 const DEFAULT_CONFIG : LoggerConfig = {
     logLevel: LogLevel.All,
 };
 
 export default class Logger {
-    static config : LoggerConfig = DEFAULT_CONFIG;
+    private static config : LoggerConfig = DEFAULT_CONFIG;
 
     static init(config : Partial<LoggerConfig>) : void {
         Logger.config = { ...DEFAULT_CONFIG, ...config };
@@ -37,39 +35,39 @@ export default class Logger {
         console.log(new Error().stack || "");
     }
 
-    static debug(message : string, data? : any) : void {
-        if ((this.config.logLevel & LogLevel.Debug) !== LogLevel.Debug) return;
-        if (data) {
+    static debug<T>(message : string, data? : T) : void {
+        if ((this.config.logLevel & LogLevel.Debug) !== LogLevel.Debug)
+            return;
+        if (data)
             console.debug(`DEBUG | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
-        } else {
+        else
             console.debug(`DEBUG | ${this.getSimpleStackTrace()[3]} | ${message}`);
-        }
     }
 
-    static info(message : string, data? : any) : void {
-        if ((this.config.logLevel & LogLevel.Info) !== LogLevel.Info) return;
-        if (data) {
+    static info<T>(message : string, data? : T) : void {
+        if ((this.config.logLevel & LogLevel.Info) !== LogLevel.Info)
+            return;
+        if (data)
             console.log(`INFO | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
-        } else {
+        else
             console.log(`INFO | ${this.getSimpleStackTrace()[3]} | ${message}`);
-        }
     }
 
-    static warn(message : string, data? : any) : void {
-        if ((this.config.logLevel & LogLevel.Warning) !== LogLevel.Warning) return;
-        if (data) {
+    static warn<T>(message : string, data? : T) : void {
+        if ((this.config.logLevel & LogLevel.Warning) !== LogLevel.Warning)
+            return;
+        if (data)
             console.warn(`WARN | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
-        } else {
+        else
             console.warn(`WARN | ${this.getSimpleStackTrace()[3]} | ${message}`);
-        }
     }
 
-    static error(message : string, data? : any) : void {
-        if ((this.config.logLevel & LogLevel.Error) !== LogLevel.Error) return;
-        if (data) {
+    static error<T>(message : string, data? : T) : void {
+        if ((this.config.logLevel & LogLevel.Error) !== LogLevel.Error)
+            return;
+        if (data)
             console.error(`ERROR | ${this.getSimpleStackTrace()[3]} | ${message}`, data);
-        } else {
+        else
             console.error(`ERROR | ${this.getSimpleStackTrace()[3]} | ${message}`);
-        }
     }
 }

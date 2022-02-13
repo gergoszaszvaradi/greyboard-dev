@@ -4,15 +4,15 @@ import { Tool } from "../core/tool";
 import { createActions, createStore } from "../utils/flux";
 
 interface ToolboxState {
-    selectedTool: Tool | null;
-    selectedColor: Color | null;
-    selectedWeight: number | null;
+    selectedTool: Tool;
+    selectedColor: Color;
+    selectedWeight: number;
 }
 
 export const ToolboxStore = createStore<ToolboxState>({
-    selectedTool: null,
-    selectedColor: null,
-    selectedWeight: null,
+    selectedTool: app.toolbox.selectedTool,
+    selectedColor: app.toolbox.selectedColor,
+    selectedWeight: app.toolbox.selectedWeight,
 });
 
 class ToolboxActions {

@@ -2,7 +2,7 @@ import Point from "../../common/utils/geometry/point";
 
 export default class Viewport {
     public position : Point = new Point();
-    public scale : number = 1;
+    public scale = 1;
 
     reset() : void {
         this.position = new Point();

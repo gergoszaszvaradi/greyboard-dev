@@ -66,9 +66,8 @@ class Application {
         const event = new PointerEvent(e, EventActionState.None);
         this.input.pointerEventInlet(event);
         this.toolbox.selectedTool.onPointerMove(event);
-        if (this.input.isMouseButtonPressed(MouseButton.Left)) {
+        if (this.input.isMouseButtonPressed(MouseButton.Left))
             this.toolbox.selectedTool.onActionPointerMove(event);
-        }
     }
 
     pointerUp(e : MouseEvent | TouchEvent) : void {

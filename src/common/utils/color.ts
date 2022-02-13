@@ -1,13 +1,14 @@
 export default class Color {
     constructor(public r : number = 0, public g : number = 0, public b : number = 0, public a : number = 255) {}
 
-    public static fromUInt(color : number) : Color {
+    static fromUInt(color : number) : Color {
         return new Color(color & 0xFF000000, color & 0x00FF0000, color & 0x0000FF00, color & 0x000000FF);
     }
 
-    public static fromHex(color : string) : Color {
+    static fromHex(color : string) : Color {
         let hex = color.substring(1);
-        if (hex.length === 6) { hex += "FF"; }
+        if (hex.length === 6)
+            hex += "FF";
         return this.fromUInt(parseInt(hex, 16));
     }
 

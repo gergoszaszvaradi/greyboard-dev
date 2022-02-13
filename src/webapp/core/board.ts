@@ -23,7 +23,7 @@ export default class ClientBoard extends Board {
             item.cell.min = min;
             item.cell.max = max;
 
-            for (let { x } = min; x <= max.x; ++x) {
+            for (let { x } = min; x <= max.x; ++x)
                 for (let { y } = min; y <= max.y; ++y) {
                     const key = this.hash(x, y);
                     let cell = this.cells.get(key);
@@ -33,7 +33,6 @@ export default class ClientBoard extends Board {
                     }
                     cell.add(item);
                 }
-            }
         }
     }
 
@@ -50,12 +49,14 @@ export default class ClientBoard extends Board {
     update(ids : Iterable<string>) : void {
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
+            if (!item)
+                continue;
 
             const min = this.getCellIndex(item.rect.x, item.rect.y);
             const max = this.getCellIndex(item.rect.x + item.rect.w, item.rect.y + item.rect.h);
 
-            if (item.cell.min === min && item.cell.max === max) { continue; }
+            if (item.cell.min === min && item.cell.max === max)
+                continue;
 
             this.removeFromGrid([id]);
             this.addToGrid([item]);
@@ -70,16 +71,17 @@ export default class ClientBoard extends Board {
     removeFromGrid(ids : Iterable<string>) : void {
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
+            if (!item)
+                continue;
             const { min, max } = item.cell;
 
-            for (let { x } = min; x <= max.x; ++x) {
+            for (let { x } = min; x <= max.x; ++x)
                 for (let { y } = min; y <= max.y; ++y) {
                     const key = this.hash(x, y);
                     const cell = this.cells.get(key);
-                    if (cell) cell.delete(item);
+                    if (cell)
+                        cell.delete(item);
                 }
-            }
         }
     }
 
@@ -94,13 +96,15 @@ export default class ClientBoard extends Board {
 
         const items = new Set<BoardItem>();
 
-        for (let { x } = min; x <= max.x; ++x) {
+        for (let { x } = min; x <= max.x; ++x)
             for (let { y } = min; y <= max.y; ++y) {
                 const key = this.hash(x, y);
                 const cell = this.cells.get(key);
-                if (cell) for (const item of cell.values()) items.add(item);
+                if (cell)
+                    for (const item of cell.values())
+                        items.add(item);
             }
-        }
+
         return items;
     }
 
@@ -108,13 +112,15 @@ export default class ClientBoard extends Board {
         const coord = this.getCellIndex(point.x, point.y);
         const items = new Set<BoardItem>();
 
-        for (let x = coord.x - 1; x <= coord.x + 1; ++x) {
+        for (let x = coord.x - 1; x <= coord.x + 1; ++x)
             for (let y = coord.y - 1; y <= coord.y + 1; ++y) {
                 const key = this.hash(x, y);
                 const cell = this.cells.get(key);
-                if (cell) for (const item of cell.values()) items.add(item);
+                if (cell)
+                    for (const item of cell.values())
+                        items.add(item);
             }
-        }
+
         return items;
     }
 

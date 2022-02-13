@@ -4,7 +4,6 @@ import Color from "../../common/utils/color";
 import { PointerEvent, Shortcut } from "./input";
 import Eraser from "./tools/eraser";
 import Pencil from "./tools/pencil";
-import app from "./app";
 
 export class ToolCategory {
     public static Shapes = new ToolCategory("Shapes", mdiShape);

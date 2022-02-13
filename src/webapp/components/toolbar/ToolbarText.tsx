@@ -1,10 +1,8 @@
 import React, { ReactElement } from "react";
 
-import "./ToolbarText.scss";
+import styles from "./ToolbarText.module.scss";
 
-const ToolbarButton : React.FC = ({ children }) : ReactElement => {
-    return (
-        <span className="toolbar-text">{children}</span>
-    );
-};
+const ToolbarButton : React.FC = ({ children }) : ReactElement => (
+    <span className={styles.toolbarText}>{children}</span>
+);
 export default ToolbarButton;

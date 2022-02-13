@@ -14,8 +14,8 @@ export class BoardItem {
     public rect : Rect = new Rect();
     public cell : MinMaxRect = new MinMaxRect();
     public label : string | null = null;
-    public locked : boolean = false;
-    public zIndex : number = 0;
+    public locked = false;
+    public zIndex = 0;
 
     constructor(public createdBy : Id) {}
 
@@ -34,18 +34,20 @@ export class BoardItem {
 }
 
 export default class Board {
-    public name : string = "New Board";
+    public name = "New Board";
     public items : Map<string, BoardItem> = new Map();
-    public public : boolean = false;
+    public public = false;
 
     add(items : BoardItem[]) : void {
-        for (const item of items) { this.items.set(item.id.toString(), item); }
+        for (const item of items)
+            this.items.set(item.id.toString(), item);
     }
 
     move(ids : Iterable<string>, dx : number, dy : number) : void {
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
+            if (!item)
+                continue;
 
             item.rect.x -= dx;
             item.rect.y -= dy;
@@ -57,7 +59,8 @@ export default class Board {
 
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
+            if (!item)
+                continue;
 
             item.rect.x -= ((item.rect.x - bb.x) / bb.w) * dx;
             item.rect.y -= ((item.rect.y - bb.y) / bb.h) * dy;
@@ -67,36 +70,43 @@ export default class Board {
     }
 
     remove(ids : Iterable<string>) : void {
-        for (const id of ids) { this.items.delete(id); }
+        for (const id of ids)
+            this.items.delete(id);
     }
 
     bringForward(ids : Iterable<string>) : void {
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
-            if (item.zIndex < 255) { item.zIndex++; }
+            if (!item)
+                continue;
+            if (item.zIndex < 255)
+                item.zIndex++;
         }
     }
 
     sendBackward(ids : Iterable<string>) : void {
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
-            if (item.zIndex > 0) { item.zIndex--; }
+            if (!item)
+                continue;
+            if (item.zIndex > 0)
+                item.zIndex--;
         }
     }
 
     setLockState(ids : Iterable<string>, state : boolean) : void {
         for (const id of ids) {
             const item = this.items.get(id);
-            if (!item) { continue; }
+            if (!item)
+                continue;
             item.locked = state;
         }
     }
 
     setLabel(id : string, label : string | null) : void {
         const item = this.items.get(id);
-        if (!item) { return; }
+        if (!item)
+            return;
         item.label = label;
     }
 
@@ -109,14 +119,19 @@ export default class Board {
         for (let item of items) {
             if (typeof item === "string") {
                 const i = this.items.get(item);
-                if (!i) { continue; }
+                if (!i)
+                    continue;
                 item = i;
             }
             const r = item.rect;
-            if (rr.x > r.x) { rr.x = r.x; }
-            if (rr.y > r.y) { rr.y = r.y; }
-            if (rr.w < r.x + r.w) { rr.w = r.x + r.w; }
-            if (rr.h < r.y + r.h) { rr.h = r.y + r.h; }
+            if (rr.x > r.x)
+                rr.x = r.x;
+            if (rr.y > r.y)
+                rr.y = r.y;
+            if (rr.w < r.x + r.w)
+                rr.w = r.x + r.w;
+            if (rr.h < r.y + r.h)
+                rr.h = r.y + r.h;
         }
         rr.w -= rr.x;
         rr.h -= rr.y;

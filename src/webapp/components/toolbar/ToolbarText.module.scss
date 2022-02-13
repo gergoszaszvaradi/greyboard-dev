@@ -1,6 +1,6 @@
-@import "src/webapp/global.scss";
+@import "../../global.scss";
 
-.toolbar-text {
+.toolbarText {
     @include small-uppercase-text();
     font-size: 0.6rem;
     text-align: center;

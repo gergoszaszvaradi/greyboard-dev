@@ -5,7 +5,7 @@ import Logger, { LogLevel } from "../common/utils/logger";
 
 dotenv.config();
 Logger.init({
-    logLevel: LogLevel.All,
+    logLevel: Number(process.env.LOG_LEVEL) || LogLevel.All,
 });
 const PORT = process.env.port || 5000;
 const WEBAPP_DIR = path.join(process.cwd(), "dist", "webapp");

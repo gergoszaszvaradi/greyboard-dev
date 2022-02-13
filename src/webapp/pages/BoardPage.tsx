@@ -10,7 +10,6 @@ import ToolbarButton from "../components/toolbar/ToolbarButton";
 import ToolbarText from "../components/toolbar/ToolbarText";
 import app from "../core/app";
 import { shortcutAsString } from "../core/input";
-import "./pages.scss";
 import ToolbarInput from "../components/toolbar/ToolbarInput";
 import ToolbarDivider from "../components/toolbar/ToolbarDivider";
 import Tooltip from "../components/data/Tooltip";
@@ -18,13 +17,14 @@ import { Tool } from "../core/tool";
 import { useStore } from "../utils/flux";
 import { ToolboxStore } from "../stores/ToolboxStore";
 import { BoardAction } from "../stores/BoardStore";
+import styles from "./BoardPage.module.scss";
 
 interface BoardPageParams {
     id : string;
 }
 
 const BoardPage : React.FC = () : ReactElement => {
-    useStore(ToolboxStore);
+    const toolbox = useStore(ToolboxStore);
 
     const params = useParams<BoardPageParams>();
     useEffect(() : () => void => {
@@ -40,7 +40,7 @@ const BoardPage : React.FC = () : ReactElement => {
     const toolBarButtonsFromTools = (tools : Tool[]) : ReactElement[] => tools.map((tool) => (
         <ToolbarButton
             key={tool.name}
-            active={app.toolbox.selectedTool === tool}
+            active={toolbox.selectedTool === tool}
             icon={tool.icon}
             tooltip={(
                 <Tooltip
@@ -55,8 +55,8 @@ const BoardPage : React.FC = () : ReactElement => {
     return (
         <>
             <Canvas />
-            <div className="ui">
-                <div className="top-bar flex h h-spaced">
+            <div className={styles.ui}>
+                <div className={`${styles.topBar} flex h h-spaced`}>
                     <Toolbar orientation="horizontal">
                         <ToolbarInput id="board-title" value="New Board" placeholder="" />
                         <ToolbarDivider orientation="vertical" />
@@ -67,7 +67,7 @@ const BoardPage : React.FC = () : ReactElement => {
                         <ToolbarButton icon={mdiRedo} tooltip={<Tooltip text="Redo" shortcut="CTRL + SHIFT + Z" orientation="bottom" />} />
                     </Toolbar>
                 </div>
-                <div className="middle-bar">
+                <div className={styles.middleBar}>
                     <Toolbar orientation="vertical">
                         {Array.from(toolHierarchy.entries()).map(([category, tools]) => {
                             if (category)
@@ -77,7 +77,7 @@ const BoardPage : React.FC = () : ReactElement => {
                         })}
                     </Toolbar>
                 </div>
-                <div className="bottom-bar">
+                <div className={styles.bottomBar}>
                     <Toolbar orientation="vertical">
                         <ToolbarButton icon={mdiPlus} tooltip={<Tooltip text="Zoom In" />} />
                         <ToolbarText>100%</ToolbarText>

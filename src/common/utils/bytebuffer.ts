@@ -15,7 +15,8 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     seek(pos : number) : void {
-        if (pos < 0 || pos >= this.byteLength) { throw new RangeError("Position out of bounds"); }
+        if (pos < 0 || pos >= this.byteLength)
+            throw new RangeError("Position out of bounds");
         this.head = pos;
     }
 
@@ -24,31 +25,38 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     writeByte(v : number) : number {
-        if (this.head + 1 > this.byteLength) { throw new RangeError("Index out of range"); }
-        if (v < 0 || v > 255) { throw new RangeError("'value' is out of range. It must be within [0, 255]"); }
+        if (this.head + 1 > this.byteLength)
+            throw new RangeError("Index out of range");
+        if (v < 0 || v > 255)
+            throw new RangeError("'value' is out of range. It must be within [0, 255]");
 
         this[this.head++] = v;
         return this.head;
     }
 
     readByte() : number {
-        if (this.head + 1 > this.byteLength) { throw new RangeError("Index out of range"); }
+        if (this.head + 1 > this.byteLength)
+            throw new RangeError("Index out of range");
 
         this.head++;
         return this[this.head - 1];
     }
 
     readBytes(n : number) : Uint8Array {
-        if (this.head + n > this.byteLength) { throw new RangeError("Index out of range"); }
+        if (this.head + n > this.byteLength)
+            throw new RangeError("Index out of range");
         const b = new ByteBuffer(n);
         const l = this.head + n;
-        while (this.head < l) { b.writeByte(this.readByte()); }
+        while (this.head < l)
+            b.writeByte(this.readByte());
         return b;
     }
 
     writeUInt(v : number) : number {
-        if (this.head + 4 > this.byteLength) { throw new RangeError("Index out of range"); }
-        if (v < 0 || v > 0xffffffff) { throw new RangeError(`'value' is out of range. It must be within [0, ${0xffffffff}]`); }
+        if (this.head + 4 > this.byteLength)
+            throw new RangeError("Index out of range");
+        if (v < 0 || v > 0xffffffff)
+            throw new RangeError(`'value' is out of range. It must be within [0, ${0xffffffff}]`);
 
         this[this.head++] = (v >>> 24);
         this[this.head++] = (v >>> 16);
@@ -58,7 +66,8 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     readUInt() : number {
-        if (this.head + 4 > this.byteLength) { throw new RangeError("Index out of range"); }
+        if (this.head + 4 > this.byteLength)
+            throw new RangeError("Index out of range");
 
         const v = (this[this.head] << 24) + (this[this.head + 1] << 16) + (this[this.head + 2] << 8) + this[this.head + 3];
         this.head += 4;
@@ -66,7 +75,8 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     writeFloat(v : number) : number {
-        if (this.head + 4 > this.byteLength) { throw new RangeError("Index out of range"); }
+        if (this.head + 4 > this.byteLength)
+            throw new RangeError("Index out of range");
 
         let mLen = 23;
         let e;
@@ -92,7 +102,9 @@ export default class ByteBuffer extends Uint8Array {
                 e--;
                 c *= 2;
             }
-            if (e + eBias >= 1) { value += rt / c; } else { value += rt * 2 ** 1 - eBias; }
+            if (e + eBias >= 1)
+                value += rt / c; else
+                value += rt * 2 ** 1 - eBias;
             if (value * c >= 2) {
                 e++;
                 c /= 2;
@@ -127,7 +139,8 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     readFloat() : number {
-        if (this.head + 4 > this.byteLength) { throw new RangeError("Index out of range"); }
+        if (this.head + 4 > this.byteLength)
+            throw new RangeError("Index out of range");
 
         const mLen = 23;
         let e;
@@ -173,9 +186,11 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     writeString(str : string) : number {
-        if (this.head + str.length + 1 > this.byteLength) { throw new RangeError("Index out of range"); }
+        if (this.head + str.length + 1 > this.byteLength)
+            throw new RangeError("Index out of range");
 
-        for (const c of str) { this.writeByte(c.charCodeAt(0)); }
+        for (const c of str)
+            this.writeByte(c.charCodeAt(0));
         this.writeByte(0);
         return this.head;
     }
@@ -191,23 +206,23 @@ export default class ByteBuffer extends Uint8Array {
     }
 
     writeFormatted(format : string, ...values : number[]) : number {
-        if (format.length !== values.length) { throw new SyntaxError("The number of values passed does not match the number of values in the format"); }
+        if (format.length !== values.length)
+            throw new SyntaxError("The number of values passed does not match the number of values in the format");
 
-        for (let i = 0; i < format.length; i++) {
+        for (let i = 0; i < format.length; i++)
             switch (format[i]) {
-            case "b":
-                this.writeByte(values[i]);
-                break;
-            case "i":
-                this.writeUInt(values[i]);
-                break;
-            case "f":
-                this.writeFloat(values[i]);
-                break;
-            default:
-                throw new SyntaxError(`Invalid character '${format[i]}' in format`);
+                case "b":
+                    this.writeByte(values[i]);
+                    break;
+                case "i":
+                    this.writeUInt(values[i]);
+                    break;
+                case "f":
+                    this.writeFloat(values[i]);
+                    break;
+                default:
+                    throw new SyntaxError(`Invalid character '${format[i]}' in format`);
             }
-        }
 
         return this.head;
     }
@@ -215,21 +230,20 @@ export default class ByteBuffer extends Uint8Array {
     readFormatted(format : string) : Array<number> {
         const values : number[] = new Array<number>(format.length);
 
-        for (let i = 0; i < format.length; i++) {
+        for (let i = 0; i < format.length; i++)
             switch (format[i]) {
-            case "b":
-                values[i] = this.readByte();
-                break;
-            case "i":
-                values[i] = this.readUInt();
-                break;
-            case "f":
-                values[i] = this.readFloat();
-                break;
-            default:
-                throw new SyntaxError(`Invalid character '${format[i]}' in format`);
+                case "b":
+                    values[i] = this.readByte();
+                    break;
+                case "i":
+                    values[i] = this.readUInt();
+                    break;
+                case "f":
+                    values[i] = this.readFloat();
+                    break;
+                default:
+                    throw new SyntaxError(`Invalid character '${format[i]}' in format`);
             }
-        }
 
         return values;
     }

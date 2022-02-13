@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import User from "../../models/user";
+import { User } from "../../models/user";
 import { abbreviate, className } from "../../utils/format";
 
 import styles from "./Avatar.module.scss";

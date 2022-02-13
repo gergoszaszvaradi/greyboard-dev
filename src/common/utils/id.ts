@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 
 export default class Id {
-    private id : string;
+    private readonly id : string;
 
     constructor() {
         this.id = nanoid(16);

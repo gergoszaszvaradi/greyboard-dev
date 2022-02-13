@@ -3,11 +3,15 @@ export function groupBy<T, K extends T[keyof T]>(arr : T[], key : (x : T) => K) 
     for (const item of arr) {
         const k = key(item);
         const collection = result.get(k);
-        if (!collection) {
+        if (!collection)
             result.set(k, [item]);
-        } else {
+        else
             collection.push(item);
-        }
     }
     return result;
+}
+
+export function clear<T>(arr : T[]) : T[] {
+    arr.splice(0, arr.length);
+    return arr;
 }

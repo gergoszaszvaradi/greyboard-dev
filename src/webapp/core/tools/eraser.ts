@@ -3,9 +3,10 @@ import { Tool } from "../tool";
 import Point from "../../../common/utils/geometry/point";
 import app from "../app";
 import { PointerEvent } from "../input";
+import { clear } from "../../../common/utils/array";
 
 export default class Eraser implements Tool {
-    private tail : Point[] = [];
+    private readonly tail : Point[] = [];
 
     constructor(
         public name = "Eraser",
@@ -23,7 +24,7 @@ export default class Eraser implements Tool {
     }
 
     onActionStart(e : PointerEvent) : void {
-        this.tail.splice(0, this.tail.length);
+        clear(this.tail);
         this.tail.push(app.graphics.viewport.screenToViewport(e.getPosition()));
     }
 

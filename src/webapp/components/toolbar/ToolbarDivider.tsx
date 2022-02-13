@@ -1,16 +1,14 @@
 import React, { ReactElement } from "react";
 
-import "./ToolbarDivider.scss";
+import styles from "./ToolbarDivider.module.scss";
 
 interface ToolbarInputProps {
-    orientation?: "horizontal" | "vertical",
+    orientation?: "horizontal" | "vertical";
 }
 
-const ToolbarDivider : React.FC<ToolbarInputProps> = ({ orientation }) : ReactElement => {
-    return (
-        <div className={`toolbar-divider ${orientation}`} />
-    );
-};
+const ToolbarDivider : React.FC<ToolbarInputProps> = ({ orientation }) : ReactElement => (
+    <div className={`${styles.toolbarDivider} ${orientation ? styles[orientation] : ""}`} />
+);
 ToolbarDivider.defaultProps = {
     orientation: "horizontal",
 };

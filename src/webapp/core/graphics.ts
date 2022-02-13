@@ -6,16 +6,15 @@ import Color from "../../common/utils/color";
 
 export default class Graphics {
     public viewport = new Viewport();
+    public onRender = createDelegate<[]>();
 
     private canvas : HTMLCanvasElement | null = null;
     private ctx : CanvasRenderingContext2D | null = null;
     private inUse = false;
     private readonly cachedImages : Map<string, CanvasImageSource> = new Map();
 
-    public onRender = createDelegate<[]>();
-
     start() : void {
-        this.canvas = document.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
+        [this.canvas] = document.getElementsByTagName("canvas");
         this.ctx = this.canvas.getContext("2d");
         this.inUse = true;
         this.viewport.reset();
@@ -31,26 +30,31 @@ export default class Graphics {
     }
 
     stroke(color : Color, weight = 0) : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
-        if (weight > 0) { this.ctx.lineWidth = weight; }
+        if (weight > 0)
+            this.ctx.lineWidth = weight;
         this.ctx.strokeStyle = color.toHex();
     }
 
     fill(color : Color) : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
         this.ctx.fillStyle = color.toHex();
     }
 
     dash(segments : number[]) : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
         this.ctx.setLineDash(segments);
     }
 
     font(family : string, size : number, halign = "left", valign = "top") : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
         this.ctx.font = `${size}px ${family}`;
         this.ctx.textAlign = halign as CanvasTextAlign;
@@ -58,7 +62,8 @@ export default class Graphics {
     }
 
     clear(color : Color) : void {
-        if (!this.ctx || !this.canvas) { return; }
+        if (!this.ctx || !this.canvas)
+            return;
 
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.fillStyle = color.toHex();
@@ -68,8 +73,9 @@ export default class Graphics {
         this.ctx.lineJoin = "round";
     }
 
-    rect(x : number, y : number, w : number, h : number, filled : boolean = false) : void {
-        if (!this.ctx) { return; }
+    rect(x : number, y : number, w : number, h : number, filled = false) : void {
+        if (!this.ctx)
+            return;
 
         if (filled) {
             this.ctx.fillRect(x, y, w, h);
@@ -81,17 +87,21 @@ export default class Graphics {
         }
     }
 
-    ellipse(x : number, y : number, w : number, h : number, filled : boolean = false) : void {
-        if (!this.ctx) { return; }
+    ellipse(x : number, y : number, w : number, h : number, filled = false) : void {
+        if (!this.ctx)
+            return;
 
         this.ctx.beginPath();
         this.ctx.ellipse(x, y, w, h, 0, 0, 360);
-        if (filled) this.ctx.fill(); else this.ctx.stroke();
+        if (filled)
+            this.ctx.fill(); else
+            this.ctx.stroke();
         this.ctx.closePath();
     }
 
     line(x1 : number, y1 : number, x2 : number, y2 : number) : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
         this.ctx.beginPath();
         this.ctx.moveTo(x1, y1);
@@ -101,7 +111,8 @@ export default class Graphics {
     }
 
     curve(points : Point[]) : void {
-        if (!this.ctx || points.length === 0) { return; }
+        if (!this.ctx || points.length === 0)
+            return;
 
         if (points.length === 1) {
             const fillstyle = this.ctx.fillStyle as string;
@@ -128,7 +139,8 @@ export default class Graphics {
     }
 
     path(points : Array<Point>, rect : Rect) : void {
-        if (!this.ctx || points.length === 0) { return; }
+        if (!this.ctx || points.length === 0)
+            return;
 
         if (points.length === 1) {
             const fillstyle = this.ctx.fillStyle as string;
@@ -156,11 +168,13 @@ export default class Graphics {
     }
 
     polygon(points : Point[]) : void {
-        if (!this.ctx || points.length === 0) { return; }
+        if (!this.ctx || points.length === 0)
+            return;
 
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length; i++) { this.ctx.lineTo(points[i].x, points[i].y); }
+        for (let i = 1; i < points.length; i++)
+            this.ctx.lineTo(points[i].x, points[i].y);
         this.ctx.lineTo(points[0].x, points[0].y);
         this.ctx.stroke();
         this.ctx.fill();
@@ -168,7 +182,8 @@ export default class Graphics {
     }
 
     img(x : number, y : number, w : number, h : number, src : string | CanvasImageSource) : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
         if (typeof src === "string") {
             if (!(src in this.cachedImages)) {
@@ -177,7 +192,8 @@ export default class Graphics {
                 this.cachedImages.set(src, img);
             }
             const img = this.cachedImages.get(src);
-            if (!img) { return; }
+            if (!img)
+                return;
             this.ctx.drawImage(img, x, y, w, h);
         } else {
             this.ctx.drawImage(src, x, y, w, h);
@@ -185,19 +201,22 @@ export default class Graphics {
     }
 
     text(x : number, y : number, text : string) : void {
-        if (!this.ctx) { return; }
+        if (!this.ctx)
+            return;
 
         this.ctx.fillText(text, x, y);
     }
 
     getImageData() : string {
-        if (!this.canvas) { return ""; }
+        if (!this.canvas)
+            return "";
 
         return this.canvas.toDataURL("application/octet-stream");
     }
 
     private onAnimationFrame() : void {
-        if (!this.inUse) return;
+        if (!this.inUse)
+            return;
         this.onRender();
         window.requestAnimationFrame(this.onAnimationFrame.bind(this));
     }

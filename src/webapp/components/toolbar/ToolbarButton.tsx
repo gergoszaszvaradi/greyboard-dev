@@ -1,7 +1,7 @@
 import Icon from "@mdi/react";
 import React, { ReactElement } from "react";
 
-import "./ToolbarButton.scss";
+import styles from "./ToolbarButton.module.scss";
 import { className } from "../../utils/format";
 
 interface ToolbarButtonProps {
@@ -13,14 +13,12 @@ interface ToolbarButtonProps {
 
 const ToolbarButton : React.FC<ToolbarButtonProps> = ({
     icon, tooltip, active, onClick,
-}) : ReactElement => {
-    return (
-        <button type="button" className={`toolbar-button ${className(active, "active")}`} onClick={onClick}>
-            <Icon path={icon} size={0.9} />
-            {tooltip}
-        </button>
-    );
-};
+}) : ReactElement => (
+    <button type="button" className={`${styles.toolbarButton} ${className(active, styles.active)}`} onClick={onClick}>
+        <Icon path={icon} size={0.9} />
+        {tooltip}
+    </button>
+);
 ToolbarButton.defaultProps = {
     tooltip: undefined,
     active: false,

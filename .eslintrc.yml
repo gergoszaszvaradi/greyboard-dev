@@ -8,3 +8,10 @@ parserOptions:
   project: "./tsconfig.eslint.json"
 extends:
   - "eslint-config-gergoszaszvaradi"
+globals:
+  CanvasImageSource: true
+  CanvasTextAlign: true
+  CanvasTextBaseline: true
+settings:
+  react:
+    version: "detect"

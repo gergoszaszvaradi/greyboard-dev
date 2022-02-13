@@ -1,13 +1,13 @@
 import React, { ReactElement, useEffect, useState } from "react";
 
-import "./ToolbarInput.scss";
+import styles from "./ToolbarInput.module.scss";
 
 interface ToolbarInputProps {
-    id : string,
-    type? : React.HTMLInputTypeAttribute,
-    value?: string,
-    placeholder?: string,
-    onChanged? : React.ChangeEventHandler,
+    id : string;
+    type? : React.HTMLInputTypeAttribute;
+    value?: string;
+    placeholder?: string;
+    onChanged? : React.ChangeEventHandler;
 }
 
 const ToolbarInput : React.FC<ToolbarInputProps> = ({
@@ -18,8 +18,11 @@ const ToolbarInput : React.FC<ToolbarInputProps> = ({
     useEffect(() => setInputValue(value), [value]);
 
     return (
-        <div className="toolbar-input">
-            <input type={type} id={id} name={id} value={inputValue} placeholder={placeholder} onChange={(e) => { setInputValue(e.target.value); if (onChanged) onChanged(e); }} />
+        <div className={styles.toolbarInput}>
+            <input type={type} id={id} name={id} value={inputValue} placeholder={placeholder} onChange={(e) : void => {
+                setInputValue(e.target.value); if (onChanged)
+                    onChanged(e);
+            }} />
             <label htmlFor={id}>{inputValue}</label>
         </div>
     );
