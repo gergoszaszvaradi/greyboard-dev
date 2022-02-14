@@ -1,11 +1,15 @@
+import { Inject, Injectable, Lifetime, Service } from "../service";
 import Viewport from "./viewport";
-import createDelegate from "../../common/utils/delegate";
-import Point from "../../common/utils/geometry/point";
-import Rect from "../../common/utils/geometry/rect";
-import Color from "../../common/utils/color";
+import createDelegate from "../../../common/utils/delegate";
+import Point from "../../../common/utils/geometry/point";
+import Rect from "../../../common/utils/geometry/rect";
+import Color from "../../../common/utils/color";
 
-export default class Graphics {
-    public viewport = new Viewport();
+@Injectable(Lifetime.Transient)
+export default class Graphics implements Service {
+    @Inject(Viewport)
+    private readonly viewport! : Viewport;
+
     public onRender = createDelegate<[]>();
 
     private canvas : HTMLCanvasElement | null = null;
@@ -61,12 +65,12 @@ export default class Graphics {
         this.ctx.textBaseline = valign as CanvasTextBaseline;
     }
 
-    clear(color : Color) : void {
+    clear() : void {
         if (!this.ctx || !this.canvas)
             return;
 
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.fillStyle = color.toHex();
+        this.ctx.fillStyle = "#222222";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.lineCap = "round";
@@ -217,6 +221,7 @@ export default class Graphics {
     private onAnimationFrame() : void {
         if (!this.inUse)
             return;
+        this.clear();
         this.onRender();
         window.requestAnimationFrame(this.onAnimationFrame.bind(this));
     }

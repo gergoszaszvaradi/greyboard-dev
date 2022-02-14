@@ -3,11 +3,20 @@ import { clear } from "../../../common/utils/array";
 import { Tool } from "../tool";
 import Point from "../../../common/utils/geometry/point";
 import app from "../app";
-import { PointerEvent } from "../input";
+import { PointerEvent } from "../services/input";
 import ClientBoardPath from "../board/path";
 import Id from "../../../common/utils/id";
+import { Inject } from "../service";
+import Graphics from "../services/graphics";
+import Viewport from "../services/viewport";
 
 export default class Pencil implements Tool {
+    @Inject(Graphics)
+    private readonly graphics! : Graphics;
+
+    @Inject(Viewport)
+    private readonly viewport! : Viewport;
+
     private readonly buffer : Point[] = [];
 
     constructor(
@@ -27,7 +36,7 @@ export default class Pencil implements Tool {
 
     onActionStart(e : PointerEvent) : void {
         clear(this.buffer);
-        this.buffer.push(app.graphics.viewport.screenToViewport(e.getPosition()));
+        this.buffer.push(this.viewport.screenToViewport(e.getPosition()));
     }
 
     onPointerMove(e : PointerEvent) : void {
@@ -35,7 +44,7 @@ export default class Pencil implements Tool {
     }
 
     onActionPointerMove(e : PointerEvent) : void {
-        this.buffer.push(app.graphics.viewport.screenToViewport(e.getPosition()));
+        this.buffer.push(this.viewport.screenToViewport(e.getPosition()));
     }
 
     onFrameUpdate() : void {
@@ -57,7 +66,9 @@ export default class Pencil implements Tool {
     }
 
     onDraw() : void {
-        app.graphics.stroke(app.toolbox.selectedColor, app.toolbox.selectedWeight);
-        app.graphics.curve(this.buffer);
+        if (this.buffer.length === 0)
+            return;
+        this.graphics.stroke(app.toolbox.selectedColor, app.toolbox.selectedWeight);
+        this.graphics.curve(this.buffer);
     }
 }

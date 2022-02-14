@@ -9,7 +9,7 @@ import Toolbar from "../components/toolbar/Toolbar";
 import ToolbarButton from "../components/toolbar/ToolbarButton";
 import ToolbarText from "../components/toolbar/ToolbarText";
 import app from "../core/app";
-import { shortcutAsString } from "../core/input";
+import { shortcutAsString } from "../core/services/input";
 import ToolbarInput from "../components/toolbar/ToolbarInput";
 import ToolbarDivider from "../components/toolbar/ToolbarDivider";
 import Tooltip from "../components/data/Tooltip";
@@ -33,7 +33,7 @@ const BoardPage : React.FC = () : ReactElement => {
         return () : void => {
             app.stop();
         };
-    });
+    }, []);
 
     const toolHierarchy = groupBy(app.toolbox.tools, (tool) => tool.category);
 

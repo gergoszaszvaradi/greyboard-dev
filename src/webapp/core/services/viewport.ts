@@ -1,6 +1,9 @@
-import Point from "../../common/utils/geometry/point";
+import Point from "../../../common/utils/geometry/point";
+import Rect from "../../../common/utils/geometry/rect";
+import { Injectable, Lifetime, Service } from "../service";
 
-export default class Viewport {
+@Injectable(Lifetime.Transient)
+export default class Viewport extends Service {
     public position : Point = new Point();
     public scale = 1;
 
@@ -30,5 +33,9 @@ export default class Viewport {
 
     viewportToScreen(p : Point) : Point {
         return new Point((this.position.x + p.x) * this.scale, (this.position.y + p.y) * this.scale);
+    }
+
+    getScreenRect() : Rect {
+        return new Rect(-this.position.x, -this.position.y, window.innerWidth / this.scale, window.innerHeight / this.scale);
     }
 }

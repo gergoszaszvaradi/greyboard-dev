@@ -1,9 +1,14 @@
 import Board, { BoardItem } from "../../common/core/board";
 import Point from "../../common/utils/geometry/point";
 import Rect from "../../common/utils/geometry/rect";
+import { Inject } from "./service";
+import Viewport from "./services/viewport";
 
 export default class ClientBoard extends Board {
     public static BOARD_CELL_SIZE = 100;
+
+    @Inject(Viewport)
+    private readonly viewport! : Viewport;
 
     private readonly cells : Map<string, Set<BoardItem>> = new Map();
 
@@ -13,6 +18,7 @@ export default class ClientBoard extends Board {
 
     add(items : BoardItem[]) : void {
         super.add(items);
+        this.addToGrid(items);
     }
 
     addToGrid(items : BoardItem[]) : void {
@@ -122,6 +128,12 @@ export default class ClientBoard extends Board {
             }
 
         return items;
+    }
+
+    draw() : void {
+        const items = Array.from(this.getItemsCloseToRect(this.viewport.getScreenRect())).sort((a, b) => a.zIndex - b.zIndex);
+        for (const item of items)
+            item.draw();
     }
 
     private getCellIndex(x : number, y : number) : Point {

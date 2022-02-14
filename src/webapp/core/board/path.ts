@@ -1,9 +1,13 @@
 import BoardPath from "../../../common/core/board/path";
-import app from "../app";
+import { Inject } from "../service";
+import Graphics from "../services/graphics";
 
 export default class ClientBoardPath extends BoardPath {
+    @Inject(Graphics)
+    private readonly graphics! : Graphics;
+
     draw() : void {
-        app.graphics.stroke(this.color, this.weight);
-        app.graphics.path(this.points, this.rect);
+        this.graphics.stroke(this.color, this.weight);
+        this.graphics.path(this.points, this.rect);
     }
 }

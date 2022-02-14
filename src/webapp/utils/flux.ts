@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import createDelegate from "../../common/utils/delegate";
 
 class Store<S> {
-    public onStateChanged = createDelegate<[S]>();
+    public onStateChanged = createDelegate<[state: S]>();
     constructor(public state : S) {};
 
     setState(state : S) : void {
@@ -32,6 +32,6 @@ export function useStore<S>(store : Store<S>) : S {
         return () : void => {
             store.onStateChanged.remove(setState);
         };
-    });
+    }, []);
     return state;
 }

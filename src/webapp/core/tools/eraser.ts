@@ -1,11 +1,19 @@
 import { mdiEraser } from "@mdi/js";
 import { Tool } from "../tool";
 import Point from "../../../common/utils/geometry/point";
-import app from "../app";
-import { PointerEvent } from "../input";
+import { PointerEvent } from "../services/input";
 import { clear } from "../../../common/utils/array";
+import { Inject } from "../service";
+import Graphics from "../services/graphics";
+import Viewport from "../services/viewport";
 
 export default class Eraser implements Tool {
+    @Inject(Graphics)
+    private readonly graphics! : Graphics;
+
+    @Inject(Viewport)
+    private readonly viewport! : Viewport;
+
     private readonly tail : Point[] = [];
 
     constructor(
@@ -25,7 +33,7 @@ export default class Eraser implements Tool {
 
     onActionStart(e : PointerEvent) : void {
         clear(this.tail);
-        this.tail.push(app.graphics.viewport.screenToViewport(e.getPosition()));
+        this.tail.push(this.viewport.screenToViewport(e.getPosition()));
     }
 
     onActionPointerMove(e: PointerEvent): void {

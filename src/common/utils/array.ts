@@ -15,3 +15,7 @@ export function clear<T>(arr : T[]) : T[] {
     arr.splice(0, arr.length);
     return arr;
 }
+
+export function copy<T>(arr : T[]) : T[] {
+    return [...arr];
+}

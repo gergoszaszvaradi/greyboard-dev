@@ -1,20 +1,25 @@
 import Size from "../../common/utils/geometry/size";
 import createDelegate from "../../common/utils/delegate";
-import Graphics from "./graphics";
+import Graphics from "./services/graphics";
 import { Toolbox } from "./tool";
 import ClientBoard from "./board";
 import Input, {
     EventActionState, KeyEvent, MouseButton, PointerEvent,
-} from "./input";
+} from "./services/input";
+import { Inject } from "./service";
 
 class Application {
+    @Inject(Graphics)
+    private readonly graphics! : Graphics;
+
+    @Inject(Input)
+    private readonly input! : Input;
+
     public id : string | null = null;
     public size = new Size();
-    public input = new Input();
     public board = new ClientBoard();
-    public graphics = new Graphics();
-    public toolbox = new Toolbox();
 
+    public toolbox = new Toolbox();
     public onResize = createDelegate<[size: Size]>();
 
     start(id : string) : void {
@@ -27,6 +32,7 @@ class Application {
 
         this.graphics.start();
         this.graphics.onRender.add(() => {
+            this.board.draw();
             this.toolbox.selectedTool.onFrameUpdate();
             this.toolbox.selectedTool.onDraw();
         });

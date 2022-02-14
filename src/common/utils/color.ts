@@ -13,7 +13,7 @@ export default class Color {
     }
 
     toUInt() : number {
-        return this.r << 32 + this.g << 16 + this.b << 8 + this.a;
+        return ((this.r << 24) + (this.g << 16) + (this.b << 8) + this.a) >>> 0;
     }
 
     toHex() : string {

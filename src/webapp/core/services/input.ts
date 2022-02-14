@@ -1,16 +1,16 @@
-import createDelegate from "../../common/utils/delegate";
-import Point from "../../common/utils/geometry/point";
+import createDelegate from "../../../common/utils/delegate";
+import Point from "../../../common/utils/geometry/point";
+import { Injectable, Lifetime, Service } from "../service";
 
 export enum KeyModifiers {
     None = 0,
-    Alt = 1,
-    Control = 2,
-    Meta = 3,
-    Shift = 4,
+    Alt,
+    Control,
+    Meta,
+    Shift,
 }
 
 export enum MouseButton {
-    None = 0,
     Left,
     Middle,
     Right
@@ -42,7 +42,7 @@ export function shortcutAsString(shortcut : Shortcut) : string {
 
 export class PointerEvent {
     public modifiers : KeyModifiers;
-    public button : MouseButton = MouseButton.None;
+    public button : MouseButton = MouseButton.Left;
     private readonly positions : Point[] = [];
 
     constructor(e : MouseEvent | TouchEvent, public state : EventActionState) {
@@ -91,8 +91,9 @@ export class KeyEvent {
     }
 }
 
-export default class Input {
-    public onShortcutFired = createDelegate<[Shortcut]>();
+@Injectable(Lifetime.Transient)
+export default class Input extends Service {
+    public onShortcutFired = createDelegate<[shortcut: Shortcut]>();
     private readonly pressedKeys : Map<string, boolean> = new Map();
     private readonly pressedMouseButtons : Map<MouseButton, boolean> = new Map();
     private readonly shortcuts : Shortcut[] = [];
@@ -117,7 +118,10 @@ export default class Input {
     }
 
     pointerEventInlet(e : PointerEvent) : void {
-        this.pressedMouseButtons.set(e.button, e.state !== EventActionState.Released);
+        if (e.state === EventActionState.Pressed)
+            this.pressedMouseButtons.set(e.button, true);
+        if (e.state === EventActionState.Released)
+            this.pressedMouseButtons.set(e.button, false);
     }
 
     registerShortcut(shortcut : Shortcut) : void {
@@ -129,8 +133,6 @@ export default class Input {
     }
 
     isMouseButtonPressed(button : MouseButton) : boolean {
-        if (button === MouseButton.None)
-            return false;
         return this.pressedMouseButtons.get(button) || false;
     }
 }

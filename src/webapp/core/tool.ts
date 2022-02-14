@@ -1,9 +1,10 @@
 import { mdiShape } from "@mdi/js";
 import createDelegate from "../../common/utils/delegate";
 import Color from "../../common/utils/color";
-import { PointerEvent, Shortcut } from "./input";
+import { PointerEvent, Shortcut } from "./services/input";
 import Eraser from "./tools/eraser";
 import Pencil from "./tools/pencil";
+import View from "./tools/view";
 
 export class ToolCategory {
     public static Shapes = new ToolCategory("Shapes", mdiShape);
@@ -35,14 +36,15 @@ export class Toolbox {
     public selectedColor : Color;
     public selectedWeight : number;
 
-    public onToolSelected = createDelegate<[Tool]>();
-    public onColorSelected = createDelegate<[Color]>();
-    public onWeightSelected = createDelegate<[number]>();
+    public onToolSelected = createDelegate<[tool: Tool]>();
+    public onColorSelected = createDelegate<[color: Color]>();
+    public onWeightSelected = createDelegate<[weight: number]>();
 
     constructor() {
         this.tools = [
             new Pencil(),
             new Eraser(),
+            new View(),
         ];
         this.colors = [
             new Color(255, 255, 255, 255),

@@ -6,6 +6,10 @@ export default class Rect {
     static infinite() : Rect {
         return new Rect(-Infinity, -Infinity, Infinity, Infinity);
     }
+
+    static invertedInfinite() : Rect {
+        return new Rect(Infinity, Infinity, -Infinity, -Infinity);
+    }
 }
 
 export class MinMaxRect {

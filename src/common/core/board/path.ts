@@ -10,7 +10,7 @@ import { BoardItem, BoardItemType } from "../board";
 
 export default class BoardPath extends BoardItem {
     public type = BoardItemType.Path;
-    public rect = Rect.infinite();
+    public rect = Rect.invertedInfinite();
 
     constructor(createdBy : Id, public points : Point[] = [], public color : Color, public weight : number = 2) {
         super(createdBy);
@@ -43,8 +43,10 @@ export default class BoardPath extends BoardItem {
     }
 
     optimize() : void {
-        if (this.points.length === 1)
+        if (this.points.length === 1) {
+            this.points = [this.points[0]];
             return;
+        }
 
         const points = [];
         points.push(this.points[this.points.length - 1]);
