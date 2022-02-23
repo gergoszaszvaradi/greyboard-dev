@@ -4,7 +4,7 @@ export default class Id {
     private readonly id : string;
 
     constructor() {
-        this.id = nanoid(16);
+        this.id = nanoid(8);
     }
 
     toString() : string {

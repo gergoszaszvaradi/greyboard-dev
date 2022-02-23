@@ -1,25 +1,27 @@
-import { Inject, Injectable, Lifetime, Service } from "../service";
+import { Injectable, Lifetime, Service } from "../../../common/core/di";
 import Viewport from "./viewport";
 import createDelegate from "../../../common/utils/delegate";
 import Point from "../../../common/utils/geometry/point";
 import Rect from "../../../common/utils/geometry/rect";
 import Color from "../../../common/utils/color";
 
-@Injectable(Lifetime.Transient)
+@Injectable(Lifetime.Singleton)
 export default class Graphics implements Service {
-    @Inject(Viewport)
-    private readonly viewport! : Viewport;
-
     public onRender = createDelegate<[]>();
 
-    private canvas : HTMLCanvasElement | null = null;
+    protected canvas : HTMLCanvasElement | null = null;
+    protected inUse = false;
+    protected readonly cachedImages : Map<string, CanvasImageSource> = new Map();
+
     private ctx : CanvasRenderingContext2D | null = null;
-    private inUse = false;
-    private readonly cachedImages : Map<string, CanvasImageSource> = new Map();
+
+    constructor(
+        protected readonly viewport : Viewport,
+    ) {}
 
     start() : void {
         [this.canvas] = document.getElementsByTagName("canvas");
-        this.ctx = this.canvas.getContext("2d");
+        this.getContext();
         this.inUse = true;
         this.viewport.reset();
 
@@ -31,6 +33,11 @@ export default class Graphics implements Service {
         this.ctx = null;
         this.inUse = false;
         this.onRender.clear();
+    }
+
+    getContext() : void {
+        if (this.canvas)
+            this.ctx = this.canvas.getContext("2d");
     }
 
     stroke(color : Color, weight = 0) : void {
@@ -75,6 +82,9 @@ export default class Graphics implements Service {
 
         this.ctx.lineCap = "round";
         this.ctx.lineJoin = "round";
+
+        this.ctx.scale(this.viewport.scale, this.viewport.scale);
+        this.ctx.translate(this.viewport.position.x, this.viewport.position.y);
     }
 
     rect(x : number, y : number, w : number, h : number, filled = false) : void {

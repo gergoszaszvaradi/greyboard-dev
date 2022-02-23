@@ -3,6 +3,18 @@ import Point from "./point";
 export default class Rect {
     constructor(public x : number = 0, public y : number = 0, public w : number = 0, public h : number = 0) {}
 
+    get x2() : number {
+        return this.x + this.w;
+    }
+
+    get y2() : number {
+        return this.y + this.h;
+    }
+
+    get center() : Point {
+        return new Point(this.x + this.w / 2, this.y + this.h / 2);
+    }
+
     static infinite() : Rect {
         return new Rect(-Infinity, -Infinity, Infinity, Infinity);
     }

@@ -1,10 +1,12 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import Logger, { LogLevel } from "../common/utils/logger";
+import Logger, { LogLevel } from "../common/services/logger";
+import { Container } from "../common/core/di";
 
 dotenv.config();
-Logger.init({
+const logger = Container.get<Logger>(Logger);
+logger.init({
     logLevel: Number(process.env.LOG_LEVEL) || LogLevel.All,
 });
 const PORT = process.env.PORT || 5000;
@@ -18,5 +20,5 @@ app.get("/*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    Logger.info(`Listening on ${PORT}`);
+    logger.info(`Listening on ${PORT}`);
 });

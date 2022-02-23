@@ -1,20 +1,27 @@
+import createDelegate from "../../../common/utils/delegate";
 import Point from "../../../common/utils/geometry/point";
 import Rect from "../../../common/utils/geometry/rect";
-import { Injectable, Lifetime, Service } from "../service";
+import { inRange } from "../../../common/utils/utils";
+import { Injectable, Lifetime, Service } from "../../../common/core/di";
 
-@Injectable(Lifetime.Transient)
-export default class Viewport extends Service {
+@Injectable(Lifetime.Singleton)
+export default class Viewport implements Service {
     public position : Point = new Point();
     public scale = 1;
+
+    public onScaleChanged = createDelegate<[scale : number]>();
+
+    start() : void { this.reset(); }
+    stop() : void { this.reset(); }
 
     reset() : void {
         this.position = new Point();
         this.scale = 1;
     }
 
-    pan(dx : number, dy : number) : void {
-        this.position.x += dx / this.scale;
-        this.position.y += dy / this.scale;
+    pan(d : Point) : void {
+        this.position.x += d.x / this.scale;
+        this.position.y += d.y / this.scale;
     }
 
     panTo(p : Point) : void {
@@ -22,9 +29,21 @@ export default class Viewport extends Service {
     }
 
     zoom(c : Point, d : number) : void {
-        this.pan(-c.x, -c.y);
+        if (!inRange(this.scale - d, 0.1, 4))
+            return;
+        this.pan(c.inverted());
         this.scale -= d;
-        this.pan(c.x, c.y);
+        this.pan(c);
+        this.onScaleChanged(this.scale);
+    }
+
+    multiplyZoom(c : Point, d : number) : void {
+        if (!inRange(this.scale * d, 0.1, 4))
+            return;
+        this.pan(c.inverted());
+        this.scale *= d;
+        this.pan(c);
+        this.onScaleChanged(this.scale);
     }
 
     screenToViewport(p : Point) : Point {

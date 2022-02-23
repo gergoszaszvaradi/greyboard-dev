@@ -22,6 +22,7 @@
 
     &.vertical {
         flex-direction: column;
+        margin-bottom: 20px;
 
         & > *:first-child {
             border-top-left-radius: $border-radius;

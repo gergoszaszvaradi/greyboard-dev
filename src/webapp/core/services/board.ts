@@ -1,20 +1,23 @@
-import Board, { BoardItem } from "../../common/core/board";
-import Point from "../../common/utils/geometry/point";
-import Rect from "../../common/utils/geometry/rect";
-import { Inject } from "./service";
-import Viewport from "./services/viewport";
+import Board, { BoardItem } from "../../../common/core/board";
+import Point from "../../../common/utils/geometry/point";
+import Rect from "../../../common/utils/geometry/rect";
+import { Injectable, Lifetime, Service } from "../../../common/core/di";
+import Viewport from "./viewport";
 
-export default class ClientBoard extends Board {
+@Injectable(Lifetime.Singleton)
+export default class ClientBoard extends Board implements Service {
     public static BOARD_CELL_SIZE = 100;
-
-    @Inject(Viewport)
-    private readonly viewport! : Viewport;
 
     private readonly cells : Map<string, Set<BoardItem>> = new Map();
 
-    constructor() {
+    constructor(
+        private readonly viewport : Viewport,
+    ) {
         super();
     }
+
+    start(): void { this.clear(); }
+    stop(): void { this.clear(); }
 
     add(items : BoardItem[]) : void {
         super.add(items);
@@ -137,10 +140,7 @@ export default class ClientBoard extends Board {
     }
 
     private getCellIndex(x : number, y : number) : Point {
-        return {
-            x: Math.floor(x / ClientBoard.BOARD_CELL_SIZE),
-            y: Math.floor(y / ClientBoard.BOARD_CELL_SIZE),
-        };
+        return new Point(Math.floor(x / ClientBoard.BOARD_CELL_SIZE), Math.floor(y / ClientBoard.BOARD_CELL_SIZE));
     }
 
     private hash(x : number, y : number) : string {

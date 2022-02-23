@@ -1,40 +1,78 @@
 import Size from "../../common/utils/geometry/size";
 import createDelegate from "../../common/utils/delegate";
+import { Container } from "../../common/core/di";
 import Graphics from "./services/graphics";
-import { Toolbox } from "./tool";
-import ClientBoard from "./board";
+import { Tool, Toolbox } from "./services/toolbox";
+import ClientBoard from "./services/board";
 import Input, {
-    EventActionState, KeyEvent, MouseButton, PointerEvent,
+    EventActionState, MouseButton,
 } from "./services/input";
-import { Inject } from "./service";
+import Pencil from "./tools/pencil";
+import Eraser from "./tools/eraser";
+import View from "./tools/view";
+import Viewport from "./services/viewport";
+
+import "./services/webgl2/graphics";
 
 class Application {
-    @Inject(Graphics)
-    private readonly graphics! : Graphics;
-
-    @Inject(Input)
-    private readonly input! : Input;
-
     public id : string | null = null;
     public size = new Size();
-    public board = new ClientBoard();
-
-    public toolbox = new Toolbox();
     public onResize = createDelegate<[size: Size]>();
+
+    constructor(
+        private readonly graphics : Graphics,
+        private readonly input : Input,
+        private readonly toolbox : Toolbox,
+        private readonly board : ClientBoard,
+        private readonly viewport : Viewport,
+    ) {
+        this.toolbox.tools = [
+            new Pencil(this.graphics, this.viewport, this.toolbox, this.board),
+            new Eraser(this.graphics, this.viewport),
+            new View(this.viewport, this.toolbox),
+        ];
+        [this.toolbox.selectedTool] = this.toolbox.tools;
+    }
 
     start(id : string) : void {
         this.id = id;
         this.size.width = window.innerWidth;
         this.size.height = window.innerHeight;
 
-        this.input.start();
-        this.toolbox.tools.forEach((tool) => this.input.registerShortcut(tool.shortcut));
+        Container.start();
+        this.toolbox.tools.forEach((tool) => {
+            if (tool.shortcut)
+                this.input.registerShortcut(tool.shortcut, () => this.toolbox.selectTool(tool));
+        });
 
-        this.graphics.start();
         this.graphics.onRender.add(() => {
             this.board.draw();
             this.toolbox.selectedTool.onFrameUpdate();
             this.toolbox.selectedTool.onDraw();
+        });
+
+        this.input.onPointerPressed.add((event) => {
+            if (event.button === MouseButton.Primary) {
+                this.toolbox.startAction(event);
+            } else if (event.button === MouseButton.Auxiliary) {
+                const viewTool = this.toolbox.getTool(View);
+                if (viewTool) {
+                    this.toolbox.selectTool(viewTool);
+                    this.toolbox.startAction(event);
+                }
+            }
+        });
+        this.input.onPointerMoved.add((event) => {
+            this.toolbox.updateAction(event);
+        });
+        this.input.onPointerReleased.add((event) => {
+            this.toolbox.stopAction(event);
+        });
+        this.input.onPointerScrolled.add((event) => {
+            if (event.isDeltaRelative)
+                this.viewport.multiplyZoom(event.position, event.delta);
+            else
+                this.viewport.zoom(event.position, Math.sign(event.delta) * 0.1);
         });
 
         window.addEventListener("resize", () => this.resize(window.innerWidth, window.innerHeight));
@@ -42,11 +80,7 @@ class Application {
     }
 
     stop() : void {
-        // unbind registered events
-
-        this.input.clear();
-        this.graphics.stop();
-        this.board.clear();
+        Container.stop();
         this.onResize.clear();
     }
 
@@ -56,45 +90,32 @@ class Application {
         this.onResize(this.size);
     }
 
-    pointerDown(e : MouseEvent | TouchEvent) : void {
-        e.preventDefault();
-        const event = new PointerEvent(e, EventActionState.Pressed);
-        this.input.pointerEventInlet(event);
-        if (this.input.isMouseButtonPressed(MouseButton.Left)) {
-            this.toolbox.selectedTool.onActionStart(event);
-        } else {
-            // this.graphics.viewport.pan()
-        }
+    mouseEvent(e : MouseEvent, state : EventActionState) : void {
+        this.input.processMouseEvent(e, state);
     }
 
-    pointerMove(e : MouseEvent | TouchEvent) : void {
-        e.preventDefault();
-        const event = new PointerEvent(e, EventActionState.None);
-        this.input.pointerEventInlet(event);
-        this.toolbox.selectedTool.onPointerMove(event);
-        if (this.input.isMouseButtonPressed(MouseButton.Left))
-            this.toolbox.selectedTool.onActionPointerMove(event);
+    touchEvent(e : TouchEvent, state : EventActionState) : void {
+        this.input.processTouchEvent(e, state);
     }
 
-    pointerUp(e : MouseEvent | TouchEvent) : void {
-        e.preventDefault();
-        const event = new PointerEvent(e, EventActionState.Released);
-        this.input.pointerEventInlet(event);
-        this.toolbox.selectedTool.onActionEnd(event);
+    keyEvent(e : KeyboardEvent, state : EventActionState) : void {
+        this.input.processKeyEvent(e, state);
     }
 
-    keyDown(e : KeyboardEvent) : void {
-        e.preventDefault();
-        const event = new KeyEvent(e, EventActionState.Pressed);
-        this.input.keyEventInlet(event);
+    toolSelected(tool : Tool) : void {
+        this.toolbox.selectTool(tool);
     }
 
-    keyUp(e : KeyboardEvent) : void {
-        e.preventDefault();
-        const event = new KeyEvent(e, EventActionState.Released);
-        this.input.keyEventInlet(event);
+    viewportScaled(direction : number) : void {
+        this.viewport.zoom(this.viewport.getScreenRect().center, -direction * 0.3);
     }
 }
 
-const app = new Application();
+const app = new Application(
+    Container.get(Graphics),
+    Container.get(Input),
+    Container.get(Toolbox),
+    Container.get(ClientBoard),
+    Container.get(Viewport),
+);
 export default app;

@@ -9,8 +9,6 @@
     background-color: transparent;
     color: $color-dark;
     cursor: pointer;
-    
-    @include show-tooltip-on-hover();
 
     &:hover {
         background-color: $color-opaque;

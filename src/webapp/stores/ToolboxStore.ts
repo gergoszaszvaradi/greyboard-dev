@@ -1,25 +1,38 @@
+import { Container } from "../../common/core/di";
 import Color from "../../common/utils/color";
-import app from "../core/app";
-import { Tool } from "../core/tool";
+import { Tool, Toolbox } from "../core/services/toolbox";
 import { createActions, createStore } from "../utils/flux";
 
 interface ToolboxState {
-    selectedTool: Tool;
-    selectedColor: Color;
-    selectedWeight: number;
+    tools : Tool[];
+    colors : Color[];
+    selectedTool: Tool | null;
+    selectedColor: Color | null;
+    selectedWeight: number | null;
 }
 
 export const ToolboxStore = createStore<ToolboxState>({
-    selectedTool: app.toolbox.selectedTool,
-    selectedColor: app.toolbox.selectedColor,
-    selectedWeight: app.toolbox.selectedWeight,
+    tools: [],
+    colors: [],
+    selectedTool: null,
+    selectedColor: null,
+    selectedWeight: null,
 });
 
 class ToolboxActions {
+    private readonly toolbox : Toolbox;
     constructor() {
-        app.toolbox.onToolSelected.add((tool) => this.setSelectedTool(tool));
-        app.toolbox.onColorSelected.add((color) => this.setSelectedColor(color));
-        app.toolbox.onWeightSelected.add((weight) => this.setSelectedWeight(weight));
+        this.toolbox = Container.get<Toolbox>(Toolbox);
+        this.toolbox.onToolSelected.add((tool) => this.setSelectedTool(tool));
+        this.toolbox.onColorSelected.add((color) => this.setSelectedColor(color));
+        this.toolbox.onWeightSelected.add((weight) => this.setSelectedWeight(weight));
+        ToolboxStore.setState({
+            tools: this.toolbox.tools,
+            colors: this.toolbox.colors,
+            selectedTool: this.toolbox.selectedTool,
+            selectedColor: this.toolbox.selectedColor,
+            selectedWeight: this.toolbox.selectedWeight,
+        });
     }
 
     setSelectedTool(tool : Tool) : void {

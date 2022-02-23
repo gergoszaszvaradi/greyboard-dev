@@ -23,12 +23,6 @@ $border-radius: 5px;
     }
 }
 
-@mixin show-tooltip-on-hover() {
-    &:hover > .tooltip {
-        animation: tooltip-show-anim 0.2s linear 0.5s 1 forwards;
-    }
-}
-
 @mixin small-uppercase-text() {
     font-weight: 600;
     font-size: 0.8rem;

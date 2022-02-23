@@ -1,24 +1,26 @@
+import { distSq } from "../../../common/utils/geometry/geometry";
+import { clear, copy } from "../../../common/utils/array";
 import createDelegate from "../../../common/utils/delegate";
 import Point from "../../../common/utils/geometry/point";
-import { Injectable, Lifetime, Service } from "../service";
+import { Injectable, Lifetime, Service } from "../../../common/core/di";
 
 export enum KeyModifiers {
     None = 0,
-    Alt,
-    Control,
-    Meta,
-    Shift,
+    Alt = 1,
+    Control = 2,
+    Meta = 4,
+    Shift = 8,
 }
 
 export enum MouseButton {
-    Left,
-    Middle,
-    Right
+    Primary,
+    Auxiliary,
+    Secondary,
 }
 
 export enum EventActionState {
-    None = 0,
     Pressed,
+    Moved,
     Released,
 }
 
@@ -26,6 +28,7 @@ export interface Shortcut {
     key : string;
     modifiers? : KeyModifiers;
 }
+type ShortcutWithActions = Shortcut & { action: () => void };
 export function shortcutAsString(shortcut : Shortcut) : string {
     const parts = [];
     if (shortcut.modifiers) {
@@ -40,99 +43,190 @@ export function shortcutAsString(shortcut : Shortcut) : string {
     return parts.join(" + ");
 }
 
-export class PointerEvent {
-    public modifiers : KeyModifiers;
-    public button : MouseButton = MouseButton.Left;
-    private readonly positions : Point[] = [];
-
-    constructor(e : MouseEvent | TouchEvent, public state : EventActionState) {
-        if (e instanceof MouseEvent) {
-            this.positions = [new Point(e.pageX, e.pageY)];
-            this.button = e.button;
-        } else {
-            this.positions.splice(0, this.positions.length);
-            for (const touch of e.touches)
-                this.positions.push(new Point(touch.pageX, touch.pageY));
-        }
-        this.modifiers = KeyModifiers.None;
-        if (e.altKey)
-            this.modifiers |= KeyModifiers.Alt;
-        if (e.ctrlKey)
-            this.modifiers |= KeyModifiers.Control;
-        if (e.metaKey)
-            this.modifiers |= KeyModifiers.Meta;
-        if (e.shiftKey)
-            this.modifiers |= KeyModifiers.Shift;
-    }
-
-    getPositions() : Point[] {
-        return this.positions;
-    }
-
-    getPosition(i = 0) : Point {
-        return this.positions[i];
-    }
-}
-
 export class KeyEvent {
-    public key : string;
-    public modifiers : KeyModifiers;
-    constructor(e : KeyboardEvent, public state : EventActionState) {
-        this.key = e.key;
-        this.modifiers = KeyModifiers.None;
-        if (e.altKey)
-            this.modifiers |= KeyModifiers.Alt;
-        if (e.ctrlKey)
-            this.modifiers |= KeyModifiers.Control;
-        if (e.metaKey)
-            this.modifiers |= KeyModifiers.Meta;
-        if (e.shiftKey)
-            this.modifiers |= KeyModifiers.Shift;
+    constructor(
+        public key : string,
+        public modifiers : KeyModifiers,
+    ) {}
+}
+
+export class PointerEvent {
+    constructor(
+        public button : MouseButton,
+        public modifiers : KeyModifiers,
+        public positions : Point[],
+        public prevPositions : Point[],
+        public delta : number,
+        public isDeltaRelative : boolean,
+    ) {}
+
+    get position() : Point { return Point.mid(...this.positions); }
+    get prevPosition() : Point { return Point.mid(...this.prevPositions); }
+    get movement() : Point {
+        const p = this.position;
+        const pp = this.prevPosition;
+        return new Point(pp.x - p.x, pp.y - p.y);
     }
 }
 
-@Injectable(Lifetime.Transient)
-export default class Input extends Service {
-    public onShortcutFired = createDelegate<[shortcut: Shortcut]>();
-    private readonly pressedKeys : Map<string, boolean> = new Map();
-    private readonly pressedMouseButtons : Map<MouseButton, boolean> = new Map();
-    private readonly shortcuts : Shortcut[] = [];
+@Injectable(Lifetime.Singleton)
+export default class Input implements Service {
+    public onKeyPressed = createDelegate<[event: KeyEvent]>();
+    public onKeyReleased = createDelegate<[event: KeyEvent]>();
 
-    start() : void {
-        this.clear();
+    public onPointerPressed = createDelegate<[event: PointerEvent]>();
+    public onPointerMoved = createDelegate<[event: PointerEvent]>();
+    public onPointerReleased = createDelegate<[event: PointerEvent]>();
+    public onPointerScrolled = createDelegate<[event: PointerEvent]>();
+
+    public onShortcutFired = createDelegate<[shortcut: Shortcut]>();
+
+    public pointerPosition = new Point();
+    public pointerPrevPosition = new Point();
+
+    private readonly pressedKeys = new Map<string, boolean>();
+    private readonly pressedMouseButtons = new Map<MouseButton, boolean>();
+    private prevTouchPositions : Point[] = [];
+    private readonly shortcuts : ShortcutWithActions[] = [];
+
+    get pointerMovement() : Point {
+        return new Point(this.pointerPrevPosition.x - this.pointerPosition.x, this.pointerPrevPosition.y - this.pointerPosition.y);
     }
 
-    clear() : void {
-        this.shortcuts.splice(0, this.shortcuts.length);
+    start() : void {}
+    stop() : void {
+        this.onKeyPressed.clear();
+        this.onKeyReleased.clear();
+        this.onPointerPressed.clear();
+        this.onPointerMoved.clear();
+        this.onPointerReleased.clear();
+        this.onPointerScrolled.clear();
+        this.onShortcutFired.clear();
         this.pressedKeys.clear();
         this.pressedMouseButtons.clear();
+        clear(this.prevTouchPositions);
+        clear(this.shortcuts);
     }
 
-    keyEventInlet(e : KeyEvent) : void {
-        this.pressedKeys.set(e.key, e.state !== EventActionState.Released);
-
-        if (e.state === EventActionState.Released)
-            for (const shortcut of this.shortcuts)
-                if (e.key === shortcut.key && shortcut.modifiers === e.modifiers)
-                    this.onShortcutFired(shortcut);
+    registerShortcut(shortcut : Shortcut, action : () => void) : void {
+        this.shortcuts.push({
+            ...shortcut,
+            action,
+        });
     }
 
-    pointerEventInlet(e : PointerEvent) : void {
-        if (e.state === EventActionState.Pressed)
-            this.pressedMouseButtons.set(e.button, true);
-        if (e.state === EventActionState.Released)
-            this.pressedMouseButtons.set(e.button, false);
+    processKeyEvent(e : KeyboardEvent, state : EventActionState) : void {
+        e.preventDefault();
+
+        const event = new KeyEvent(e.key, this.getModifiersFromEvent(e));
+
+        if (state === EventActionState.Pressed) {
+            this.pressedKeys.set(event.key, true);
+            this.onKeyPressed(event);
+        } else if (state === EventActionState.Released) {
+            this.pressedKeys.set(event.key, false);
+            this.onKeyReleased(event);
+        }
+
+        for (const shortcut of this.shortcuts)
+            if (event.key === shortcut.key && (!event.modifiers || event.modifiers === shortcut.modifiers)) {
+                this.onShortcutFired(shortcut);
+                shortcut.action();
+            }
     }
 
-    registerShortcut(shortcut : Shortcut) : void {
-        this.shortcuts.push(shortcut);
+    processMouseEvent(e : MouseEvent | WheelEvent, state : EventActionState) : void {
+        e.preventDefault();
+
+        const event : PointerEvent = new PointerEvent(
+            e.button,
+            this.getModifiersFromEvent(e),
+            [new Point(e.clientX, e.clientY)],
+            [new Point(e.clientX - e.movementX, e.clientY - e.movementY)],
+            (e instanceof WheelEvent) ? e.deltaY : 0,
+            false,
+        );
+
+        if (e instanceof WheelEvent) {
+            this.onPointerScrolled(event);
+        } else if (state === EventActionState.Pressed) {
+            this.onPointerPressed(event);
+            this.pressedMouseButtons.set(event.button, true);
+        } else if (state === EventActionState.Moved) {
+            this.pointerPosition = event.position;
+            this.pointerPrevPosition = event.prevPosition;
+            this.onPointerMoved(event);
+        } else if (state === EventActionState.Released) {
+            this.onPointerReleased(event);
+            this.pressedMouseButtons.set(event.button, false);
+        }
     }
 
-    isKeyPressed(key : string) : boolean {
-        return this.pressedKeys.get(key) || false;
+    processTouchEvent(e : TouchEvent, state : EventActionState) : void {
+        e.preventDefault();
+
+        const event : PointerEvent = new PointerEvent(
+            MouseButton.Primary,
+            this.getModifiersFromEvent(e),
+            Array.from(e.touches).map((touch) => new Point(touch.clientX, touch.clientY)),
+            this.prevTouchPositions,
+            0,
+            true,
+        );
+
+        this.prevTouchPositions = copy(event.positions);
+
+        if (e.touches.length > 1) {
+            event.button = MouseButton.Auxiliary;
+            const d = distSq(event.positions[0], event.positions[1]);
+            const pd = distSq(event.prevPositions[0], event.prevPositions[1]);
+            if (d !== 0 && pd !== 0 && d !== pd) {
+                event.delta = d / pd;
+                this.onPointerScrolled(event);
+            }
+        }
+
+        if (state === EventActionState.Pressed) {
+            this.onPointerPressed(event);
+            this.pressedMouseButtons.set(event.button, true);
+        } else if (state === EventActionState.Moved) {
+            this.pointerPosition = event.position;
+            this.pointerPrevPosition = event.prevPosition;
+            this.onPointerMoved(event);
+        } else if (state === EventActionState.Released) {
+            this.onPointerReleased(event);
+            this.pressedMouseButtons.set(event.button, false);
+        }
     }
 
     isMouseButtonPressed(button : MouseButton) : boolean {
         return this.pressedMouseButtons.get(button) || false;
+    }
+
+    private getModifiersFromEvent(e : KeyboardEvent | MouseEvent | TouchEvent) : KeyModifiers {
+        let modifiers = KeyModifiers.None;
+        if (window.TouchEvent && e instanceof TouchEvent) {
+            if (e.altKey)
+                modifiers |= KeyModifiers.Alt;
+            if (e.ctrlKey)
+                modifiers |= KeyModifiers.Control;
+            if (e.shiftKey)
+                modifiers |= KeyModifiers.Shift;
+            if (e.metaKey)
+                modifiers |= KeyModifiers.Meta;
+            return modifiers;
+        }
+        if (e instanceof MouseEvent || e instanceof KeyboardEvent) {
+            if (e.getModifierState("Alt"))
+                modifiers |= KeyModifiers.Alt;
+            if (e.getModifierState("Control"))
+                modifiers |= KeyModifiers.Control;
+            if (e.getModifierState("Shift"))
+                modifiers |= KeyModifiers.Shift;
+            if (e.getModifierState("OS"))
+                modifiers |= KeyModifiers.Meta;
+        }
+
+        return modifiers;
     }
 }

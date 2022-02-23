@@ -58,7 +58,9 @@ module.exports = {
         new DotEnv(),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src/webapp/index.html"),
-            inject: false,
+            inject: "head",
+            publicPath: "/",
+            favicon: "src/webapp/favicon.png",
         })
     ],
     devtool: "source-map",

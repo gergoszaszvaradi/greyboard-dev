@@ -5,13 +5,13 @@ import styles from "./Tooltip.module.scss";
 interface TooltipProps {
     text: string;
     shortcut?: string;
-    orientation?: "bottom" | "right";
+    orientation?: "bottom" | "right" | "top" | "left";
 }
 
 const Tooltip : React.FC<TooltipProps> = ({ text, shortcut, orientation }) : ReactElement => (
     <div className={`${styles.tooltip} ${orientation ? styles[orientation] : ""}`}>
         <span>{text}</span>
-        {shortcut && <div className="tooltip-shortcut">{shortcut}</div>}
+        {shortcut && <div className={styles.tooltipShortcut}>{shortcut}</div>}
     </div>
 );
 Tooltip.defaultProps = {

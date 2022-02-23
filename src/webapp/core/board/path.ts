@@ -1,10 +1,16 @@
+import Color from "src/common/utils/color";
+import Point from "src/common/utils/geometry/point";
+import Id from "src/common/utils/id";
 import BoardPath from "../../../common/core/board/path";
-import { Inject } from "../service";
 import Graphics from "../services/graphics";
 
 export default class ClientBoardPath extends BoardPath {
-    @Inject(Graphics)
-    private readonly graphics! : Graphics;
+    constructor(
+        private readonly graphics : Graphics,
+        createdBy : Id, public points : Point[] = [], public color : Color, public weight : number = 2,
+    ) {
+        super(createdBy, points, color, weight);
+    }
 
     draw() : void {
         this.graphics.stroke(this.color, this.weight);

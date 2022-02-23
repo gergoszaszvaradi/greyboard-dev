@@ -1,11 +1,13 @@
 import React, { ReactElement } from "react";
-import app from "../core/app";
+import Input, { EventActionState } from "../core/services/input";
 import { BoardStore } from "../stores/BoardStore";
+import useInjectable from "../utils/di";
 import { useStore } from "../utils/flux";
 import { px } from "../utils/format";
 
 const Canvas : React.FC = () : ReactElement => {
     const board = useStore(BoardStore);
+    const input = useInjectable<Input>(Input);
     return (
         <canvas
             style={{
@@ -14,14 +16,15 @@ const Canvas : React.FC = () : ReactElement => {
             }}
             width={board.size.width}
             height={board.size.height}
-            onMouseDown={(e) : void => app.pointerDown(e.nativeEvent)}
-            onTouchStart={(e) : void => app.pointerDown(e.nativeEvent)}
-            onMouseMove={(e) : void => app.pointerMove(e.nativeEvent)}
-            onTouchMove={(e) : void => app.pointerMove(e.nativeEvent)}
-            onMouseUp={(e) : void => app.pointerUp(e.nativeEvent)}
-            onTouchEnd={(e) : void => app.pointerUp(e.nativeEvent)}
-            onKeyDown={(e) : void => app.keyDown(e.nativeEvent)}
-            onKeyUp={(e) : void => app.keyUp(e.nativeEvent)}
+            onMouseDown={(e) : void => input.processMouseEvent(e.nativeEvent, EventActionState.Pressed)}
+            onTouchStart={(e) : void => input.processTouchEvent(e.nativeEvent, EventActionState.Pressed)}
+            onMouseMove={(e) : void => input.processMouseEvent(e.nativeEvent, EventActionState.Moved)}
+            onTouchMove={(e) : void => input.processTouchEvent(e.nativeEvent, EventActionState.Moved)}
+            onMouseUp={(e) : void => input.processMouseEvent(e.nativeEvent, EventActionState.Released)}
+            onTouchEnd={(e) : void => input.processTouchEvent(e.nativeEvent, EventActionState.Released)}
+            onWheel={(e) : void => input.processMouseEvent(e.nativeEvent, EventActionState.Pressed)}
+            onKeyDown={(e) : void => input.processKeyEvent(e.nativeEvent, EventActionState.Pressed)}
+            onKeyUp={(e) : void => input.processKeyEvent(e.nativeEvent, EventActionState.Released)}
         />
     );
 };

@@ -13,7 +13,8 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     },
     "include": ["src/common/**/*", "src/webapp/core/**/*"],
     "exclude": ["dist/", "node_modules/"],

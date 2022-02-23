@@ -57,12 +57,29 @@
         }
     }
 
-    .tooltip-shortcut {
+    &.top {
+        margin-bottom: 7px;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        &::before {
+            bottom: -15px;
+            left: 50%;
+            border-top-color: $color-bright !important;
+        }
+    }
+
+    .tooltipShortcut {
         background-color: $color-opaque;
         border-radius: 3px;
         padding: 0 5px;
         margin-right: 7px;
     }
+}
+
+*:hover > .tooltip {
+    animation: tooltip-show-anim 0.2s linear 0.5s 1 forwards;
 }
 
 @keyframes tooltip-show-anim {

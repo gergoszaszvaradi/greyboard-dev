@@ -1,31 +1,36 @@
 import { mdiHandBackRight } from "@mdi/js";
-import { Tool } from "../tool";
+import { Tool, Toolbox } from "../services/toolbox";
 import { PointerEvent } from "../services/input";
-import { Inject } from "../service";
 import Viewport from "../services/viewport";
 
 export default class View implements Tool {
-    @Inject(Viewport)
-    private readonly viewport! : Viewport;
+    private prevTool : Tool | null = null;
 
     constructor(
+        private readonly viewport : Viewport,
+        private readonly toolbox : Toolbox,
         public name = "View",
         public category = null,
         public icon = mdiHandBackRight,
         public shortcut = { key: "v" },
     ) {}
 
-    onSelected() : void {}
+    onSelected(prevTool : Tool) : void {
+        this.prevTool = prevTool;
+    }
 
     onDeselected() : void {}
 
     onActionStart(e : PointerEvent) : void {}
 
     onActionPointerMove(e: PointerEvent): void {
-        // this.viewport.pan();
+        this.viewport.pan(e.movement.inverted());
     }
 
-    onActionEnd(e : PointerEvent) : void {}
+    onActionEnd(e : PointerEvent) : void {
+        if (this.prevTool)
+            this.toolbox.selectTool(this.prevTool);
+    }
 
     onPointerMove(e : PointerEvent) : void {}
 
