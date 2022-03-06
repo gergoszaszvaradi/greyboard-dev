@@ -15,7 +15,7 @@ const ToolbarButton : React.FC<ToolbarButtonProps> = ({
     icon, tooltip, active, onClick,
 }) : ReactElement => (
     <button type="button" className={`${styles.toolbarButton} ${className(active, styles.active)}`} onClick={onClick}>
-        <Icon path={icon} size={0.9} />
+        <Icon path={icon} size={1} />
         {tooltip}
     </button>
 );

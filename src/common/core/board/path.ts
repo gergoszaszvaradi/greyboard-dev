@@ -1,5 +1,4 @@
 import ByteBuffer from "src/common/utils/bytebuffer";
-import Color from "src/common/utils/color";
 import Point from "src/common/utils/geometry/point";
 import Id from "src/common/utils/id";
 import Rect from "../../utils/geometry/rect";
@@ -12,7 +11,7 @@ export default class BoardPath extends BoardItem {
     public type = BoardItemType.Path;
     public rect = Rect.invertedInfinite();
 
-    constructor(createdBy : Id, public points : Point[] = [], public color : Color, public weight : number = 2) {
+    constructor(createdBy : Id, public points : Point[] = [], public color : number, public weight : number = 2) {
         super(createdBy);
     }
 
@@ -99,7 +98,7 @@ export default class BoardPath extends BoardItem {
         buffer.writeUInt(this.points.length);
         for (const point of this.points)
             buffer.writeFormatted("ff", point.x, point.y);
-        buffer.writeFormatted("ib", this.color.toUInt(), this.weight);
+        buffer.writeFormatted("ib", this.color, this.weight);
         return buffer;
     }
 }

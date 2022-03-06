@@ -1,0 +1,38 @@
+.react-colorful {
+    width: 100% !important;
+    height: 150px !important;
+
+    & .react-colorful__saturation {
+        border-radius: 5px !important;
+        margin-bottom: 10px !important;
+        border: 0 !important;
+    }
+
+    & .react-colorful__hue {
+        border-radius: 5px !important;
+        height: 20px !important;
+    }
+
+    & .react-colorful__saturation-pointer {
+        width: 10px !important;
+        height: 10px !important;
+        outline: 2px solid black !important;
+        border: 2px solid white !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
+
+    & .react-colorful__hue-pointer {
+        width: 6px !important;
+        height: 20px !important;
+        outline: 2px solid black !important;
+        border: 2px solid white !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+        border-radius: 5px !important;
+    }
+
+    & .react-colorful__interactive:focus .react-colorful__pointer {
+        transform: translate(-50%, -50%) !important;
+    }
+}

@@ -1,6 +1,10 @@
 @import "../../global.scss";
 
 .tooltip {
+    --offsetX: 0;
+    --offsetY: 0;
+    --scale: 1;
+
     position: absolute;
     z-index: 1;
     display: flex;
@@ -16,6 +20,7 @@
     line-height: 1.25rem;
     pointer-events: none;
     opacity: 0;
+    transform: translate(var(--offsetX), var(--offsetY)) scale(var(--scale));
     animation: none;
 
     &::before {
@@ -35,7 +40,8 @@
         margin-top: 7px;
         top: 100%;
         left: 50%;
-        transform: translateX(-50%);
+        transform-origin: center top;
+        --offsetX: -50%;
 
         &::before {
             top: -5px;
@@ -48,7 +54,8 @@
         margin-left: 7px;
         top: 50%;
         left: 100%;
-        transform: translateY(-50%);
+        transform-origin: left center;
+        --offsetY: -50%;
 
         &::before {
             top: 50%;
@@ -61,7 +68,8 @@
         margin-bottom: 7px;
         bottom: 100%;
         left: 50%;
-        transform: translateX(-50%);
+        transform-origin: center bottom;
+        --offsetX: -50%;
 
         &::before {
             bottom: -15px;
@@ -79,15 +87,19 @@
 }
 
 *:hover > .tooltip {
-    animation: tooltip-show-anim 0.2s linear 0.5s 1 forwards;
+    animation: tooltip-show-anim 0.4s $timing-curve 0.5s 1 forwards;
 }
 
 @keyframes tooltip-show-anim {
     0% {
         opacity: 0;
+        --scale: 0.75;
+        transform: translate(var(--offsetX), var(--offsetY)) scale(var(--scale));
     }
 
     100% {
         opacity: 1;
+        --scale: 1;
+        transform: translate(var(--offsetX), var(--offsetY)) scale(var(--scale));
     }
 }

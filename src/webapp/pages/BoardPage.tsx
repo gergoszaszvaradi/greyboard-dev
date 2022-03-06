@@ -14,10 +14,14 @@ import ToolbarDivider from "../components/toolbar/ToolbarDivider";
 import Tooltip from "../components/data/Tooltip";
 import { Tool } from "../core/services/toolbox";
 import { useStore } from "../utils/flux";
-import { ToolboxStore } from "../stores/ToolboxStore";
+import { ToolboxAction, ToolboxStore } from "../stores/ToolboxStore";
 import { BoardAction, BoardStore } from "../stores/BoardStore";
 import styles from "./BoardPage.module.scss";
 import { shortcutAsString } from "../core/services/input";
+import ExpandableToolbar from "../components/toolbar/ExpandableToolbar";
+import Slider from "../components/controls/Slider";
+import ToolbarColorButton from "../components/toolbar/ToolbarColorButton";
+import ColorPicker from "../components/controls/ColorPicker";
 
 interface BoardPageParams {
     id : string;
@@ -49,7 +53,7 @@ const BoardPage : React.FC = () : ReactElement => {
                     shortcut={shortcutAsString(tool.shortcut)}
                 /> : undefined
             )}
-            onClick={() : void => app.toolSelected(tool)}
+            onClick={() : void => ToolboxAction.setSelectedTool(tool)}
         />
     ));
 
@@ -77,15 +81,23 @@ const BoardPage : React.FC = () : ReactElement => {
                             return toolBarButtonsFromTools(tools);
                         })}
                     </Toolbar>
-                    <Toolbar orientation="vertical">
-                        <ToolbarButton icon={mdiPalette}/>
-                    </Toolbar>
+                    <ExpandableToolbar icon={mdiPalette} expandedSize={{ w: 280, h: 300 }}>
+                        <div className="px2 pt1 pb2">
+                            <Slider label="Stroke Size" min={1} max={20} step={1} startValue={2} showValue onInput={(value) : void => ToolboxAction.setSelectedWeight(value)} />
+                        </div>
+                        {toolbox.colors.map((color, i) => (
+                            <ToolbarColorButton key={i} color={color} active={toolbox.selectedColorIndex === i} onClick={() : void => ToolboxAction.setSelectedColor(i)} />
+                        ))}
+                        <div className="px2 pt2">
+                            <ColorPicker color={toolbox.selectedColor} onInput={(color : number) : void => ToolboxAction.setColor(color)} />
+                        </div>
+                    </ExpandableToolbar>
                 </div>
                 <div className={styles.bottomBar}>
                     <Toolbar orientation="horizontal">
                         <ToolbarButton icon={mdiLayersOutline} tooltip={<Tooltip text="Outline" orientation="top" />} />
                         <ToolbarButton icon={mdiPlus} tooltip={<Tooltip text="Zoom In" orientation="top" />} onClick={() : void => app.viewportScaled(1)} />
-                        <ToolbarText>{board.viewportScale}%</ToolbarText>
+                        <ToolbarText width={50}>{board.viewportScale}%</ToolbarText>
                         <ToolbarButton icon={mdiMinus} tooltip={<Tooltip text="Zoom Out" orientation="top" />} onClick={() : void => app.viewportScaled(-1)} />
                     </Toolbar>
                 </div>

@@ -40,20 +40,20 @@ export default class Graphics implements Service {
             this.ctx = this.canvas.getContext("2d");
     }
 
-    stroke(color : Color, weight = 0) : void {
+    stroke(color : number, weight = 0) : void {
         if (!this.ctx)
             return;
 
         if (weight > 0)
             this.ctx.lineWidth = weight;
-        this.ctx.strokeStyle = color.toHex();
+        this.ctx.strokeStyle = Color.UIntToHex(color);
     }
 
-    fill(color : Color) : void {
+    fill(color : number) : void {
         if (!this.ctx)
             return;
 
-        this.ctx.fillStyle = color.toHex();
+        this.ctx.fillStyle = Color.UIntToHex(color);
     }
 
     dash(segments : number[]) : void {

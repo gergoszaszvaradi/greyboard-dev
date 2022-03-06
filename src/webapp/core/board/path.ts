@@ -1,4 +1,3 @@
-import Color from "src/common/utils/color";
 import Point from "src/common/utils/geometry/point";
 import Id from "src/common/utils/id";
 import BoardPath from "../../../common/core/board/path";
@@ -7,7 +6,7 @@ import Graphics from "../services/graphics";
 export default class ClientBoardPath extends BoardPath {
     constructor(
         private readonly graphics : Graphics,
-        createdBy : Id, public points : Point[] = [], public color : Color, public weight : number = 2,
+        createdBy : Id, public points : Point[] = [], public color : number, public weight : number = 2,
     ) {
         super(createdBy, points, color, weight);
     }

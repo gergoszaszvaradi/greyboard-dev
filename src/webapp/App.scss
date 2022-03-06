@@ -10,23 +10,15 @@
 
 * {
     font-family: 'Mukta', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    // user-select: none;
 }
 
 body {
     background-color: $color-dark;
     font-size: 1rem;
+    user-select: none;
+    -moz-user-select: none;
 }
 
-.title2 {
-    color: $color-text-on-dark;
-    font-size: 5rem;
-    text-align: center;
-    line-height: initial;
-    margin: 15vh 0 1rem 0;
-}
-
-.button-divider {
-    margin: 0 1rem;
-    color: $color-text-on-dark;
+small {
+    @include small-uppercase-text();
 }

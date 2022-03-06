@@ -1,4 +1,5 @@
 @import "./layout.scss";
+@import "./react-colorful.scss";
 
 $color-bright: white;
 $color-dark: #222222;
@@ -12,6 +13,8 @@ $color-shadow: #00000033;
 $color-opaque: #0000001a;
 
 $border-radius: 5px;
+
+$timing-curve: cubic-bezier(0, 1, .2, 1);
 
 @mixin raise-on-hover($col : $color-secondary-dark) {
     transform: translateY(0);

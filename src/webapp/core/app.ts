@@ -2,7 +2,7 @@ import Size from "../../common/utils/geometry/size";
 import createDelegate from "../../common/utils/delegate";
 import { Container } from "../../common/core/di";
 import Graphics from "./services/graphics";
-import { Tool, Toolbox } from "./services/toolbox";
+import { Toolbox } from "./services/toolbox";
 import ClientBoard from "./services/board";
 import Input, {
     EventActionState, MouseButton,
@@ -57,7 +57,7 @@ class Application {
             } else if (event.button === MouseButton.Auxiliary) {
                 const viewTool = this.toolbox.getTool(View);
                 if (viewTool) {
-                    this.toolbox.selectTool(viewTool);
+                    this.toolbox.selectToolWithPrevious(viewTool);
                     this.toolbox.startAction(event);
                 }
             }
@@ -100,10 +100,6 @@ class Application {
 
     keyEvent(e : KeyboardEvent, state : EventActionState) : void {
         this.input.processKeyEvent(e, state);
-    }
-
-    toolSelected(tool : Tool) : void {
-        this.toolbox.selectTool(tool);
     }
 
     viewportScaled(direction : number) : void {

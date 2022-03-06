@@ -1,0 +1,40 @@
+@import "../../global.scss";
+
+.expandableToolbar {
+    display: inline-flex;
+    background-color: $color-bright;
+    border-radius: $border-radius;
+    pointer-events: all;
+
+    width: 40px;
+    height: 40px;
+    transition: all 0.4s $timing-curve;
+    overflow: hidden;
+
+    .activator {
+        outline: 0;
+        border: 0;
+        background-color: transparent;
+        min-width: 40px;
+        max-width: 40px;
+        min-height: 40px;
+        max-height: 40px;
+        pointer-events: none;
+    }
+
+    .content {
+        min-width: calc(var(--width) - 40px);
+        opacity: 0;
+        transition: opacity 0.4s $timing-curve;
+    }
+
+    &:hover {
+        width: var(--width);
+        height: var(--height);
+
+        .content {
+            display: initial;
+            opacity: 1;
+        }
+    }
+}

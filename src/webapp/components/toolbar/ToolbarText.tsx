@@ -2,7 +2,14 @@ import React, { ReactElement } from "react";
 
 import styles from "./ToolbarText.module.scss";
 
-const ToolbarButton : React.FC = ({ children }) : ReactElement => (
-    <span className={styles.toolbarText}>{children}</span>
+interface ToolbarTextProps {
+    width?: number;
+}
+
+const ToolbarText : React.FC<ToolbarTextProps> = ({ width, children }) : ReactElement => (
+    <span className={styles.toolbarText} style={{ width, textAlign: width ? "center" : "left" }}>{children}</span>
 );
-export default ToolbarButton;
+ToolbarText.defaultProps = {
+    width: undefined,
+};
+export default ToolbarText;

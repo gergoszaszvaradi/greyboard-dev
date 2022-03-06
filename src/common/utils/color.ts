@@ -1,22 +1,20 @@
 export default class Color {
-    constructor(public r : number = 0, public g : number = 0, public b : number = 0, public a : number = 255) {}
-
-    static fromUInt(color : number) : Color {
-        return new Color(color & 0xFF000000, color & 0x00FF0000, color & 0x0000FF00, color & 0x000000FF);
+    static UIntToHex(color : number) : string {
+        return `#${color.toString(16)}`;
     }
 
-    static fromHex(color : string) : Color {
+    static UIntToRGBA(color : number) : [number, number, number, number] {
+        return [(color & 0xFF000000) >>> 24, (color & 0x00FF0000) >>> 16, (color & 0x0000FF00) >>> 8, color & 0x000000FF];
+    }
+
+    static HexToUInt(color : string) : number {
         let hex = color.substring(1);
         if (hex.length === 6)
             hex += "FF";
-        return this.fromUInt(parseInt(hex, 16));
+        return parseInt(hex, 16);
     }
 
-    toUInt() : number {
-        return ((this.r << 24) + (this.g << 16) + (this.b << 8) + this.a) >>> 0;
-    }
-
-    toHex() : string {
-        return `#${this.toUInt().toString(16)}`;
+    static RgbaToUint(...color : [number, number, number, number]) : number {
+        return ((color[0] << 24) + (color[1] << 16) + (color[2] << 8) + color[3]) >>> 0;
     }
 }

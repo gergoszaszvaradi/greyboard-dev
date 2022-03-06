@@ -21,7 +21,8 @@ export function createActions<F, S>(Actions : new () => F, store : Store<S>) : A
     const funcs = new Actions();
     const actions : {[key : string] : unknown} = {};
     for (const name of Object.getOwnPropertyNames(Actions.prototype))
-        actions[name] = (...args : unknown[]) : void => { (Reflect.get(funcs as unknown as object, name) as (..._args : unknown[]) => void)(...args); };
+        actions[name] = (...args : unknown[]) : void => { (Reflect.get(funcs as unknown as object, name) as (..._args : unknown[]) => void).bind(funcs)(...args); };
+
     return { store, ...(actions as unknown as F) };
 }
 
