@@ -1,0 +1,27 @@
+name: CD Development
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      
+      - name: Deploy to Development
+        if: github.event.workflow_run.conclusion == 'success'
+        uses: ./.github/actions/deploy
+        with:
+          HEROKU_USER: ${{ secrets.HEROKU_USER }}
+          HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
+          HEROKU_PROJECT: greyboard-dev

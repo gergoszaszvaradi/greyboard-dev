@@ -1,0 +1,41 @@
+name: Deploy
+description: Deploy application to Heroku
+inputs:
+  HEROKU_USER:
+    required: true
+    description: The Heroku User
+  HEROKU_TOKEN:
+    required: true
+    description: The Heroku Token
+  HEROKU_PROJECT:
+    required: true
+    description: The Heroku Project Name
+runs:
+  using: composite
+  steps:
+    - name: Setup Node and Install Dependencies
+      uses: ./.github/actions/setup
+
+    - name: Build
+      run: yarn build
+      shell: bash
+
+    - name: Install Heroku CLI
+      run: curl https://cli-assets.heroku.com/install-ubuntu.sh | bash
+      shell: bash
+
+    - name: Build Docker Image
+      run: docker build -t registry.heroku.com/${{ inputs.HEROKU_PROJECT }}/web .
+      shell: bash
+
+    - name: Login to Heroku Registry
+      run: docker login -u ${{ inputs.HEROKU_USER }} -p ${{ inputs.HEROKU_TOKEN }} registry.heroku.com
+      shell: bash
+    
+    - name: Push Image to Heroku
+      run: docker push registry.heroku.com/${{ inputs.HEROKU_PROJECT }}/web
+      shell: bash
+
+    - name: Start the App on Heroku
+      run: docker run --rm -e HEROKU_API_KEY=${{ inputs.HEROKU_TOKEN }} wingrunr21/alpine-heroku-cli container:release web --app ${{ inputs.HEROKU_PROJECT }}
+      shell: bash

@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - master
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node and Install Dependencies
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: yarn lint
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup Node and Install Dependencies
+        uses: ./.github/actions/setup
+
+      - name: Build
+        run: yarn build
