@@ -10,6 +10,8 @@
     color: $color-dark;
     cursor: pointer;
 
+    // transition: background-color 0.2s;
+
     &:hover {
         background-color: $color-opaque;
     }
@@ -17,5 +19,24 @@
     &.active {
         background-color: $color-primary;
         color: $color-text-on-dark;
+    }
+
+    &.active > svg,
+    &:active > svg {
+        animation: active-pulse 0.2s ease-in-out 0s forwards;
+    }
+}
+
+@keyframes active-pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.25);
+    }
+
+    100% {
+        transform: scale(1);
     }
 }

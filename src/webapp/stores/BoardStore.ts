@@ -6,12 +6,14 @@ import { createActions, createStore } from "../utils/flux";
 
 interface BoardState {
     id : string;
+    name : string;
     size : Size;
     viewportScale : number;
 }
 
 export const BoardStore = createStore<BoardState>({
     id: "",
+    name: "",
     size: new Size(0, 0),
     viewportScale: 100,
 });
@@ -29,6 +31,11 @@ class BoardActions {
 
     setBoardId(id : string) : void {
         BoardStore.setState({ ...BoardStore.state, id });
+    }
+
+    setBoardName(name : string) : void {
+        document.title = `Greyboard | ${name}`;
+        BoardStore.setState({ ...BoardStore.state, name });
     }
 
     setBoardSize(size : Size) : void {

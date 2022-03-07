@@ -7,7 +7,7 @@ interface ToolbarInputProps {
     type? : React.HTMLInputTypeAttribute;
     value?: string;
     placeholder?: string;
-    onChanged? : React.ChangeEventHandler;
+    onChanged? : (value : string) => void;
 }
 
 const ToolbarInput : React.FC<ToolbarInputProps> = ({
@@ -19,10 +19,13 @@ const ToolbarInput : React.FC<ToolbarInputProps> = ({
 
     return (
         <div className={styles.toolbarInput}>
-            <input type={type} id={id} name={id} value={inputValue} placeholder={placeholder} onChange={(e) : void => {
-                setInputValue(e.target.value); if (onChanged)
-                    onChanged(e);
-            }} />
+            <input type={type} id={id} name={id} value={inputValue} placeholder={placeholder}
+                onChange={(e) : void => setInputValue(e.target.value)}
+                onBlur={(e) : void => onChanged && onChanged(e.target.value)}
+                onKeyDown={(e) : void => {
+                    if (e.nativeEvent.key === "Escape" || e.nativeEvent.key === "Enter")
+                        (e.target as HTMLInputElement).blur();
+                }} />
             <label htmlFor={id}>{inputValue}</label>
         </div>
     );

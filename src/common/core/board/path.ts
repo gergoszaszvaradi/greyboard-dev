@@ -1,6 +1,5 @@
 import ByteBuffer from "src/common/utils/bytebuffer";
-import Point from "src/common/utils/geometry/point";
-import Id from "src/common/utils/id";
+import Point from "../../utils/geometry/point";
 import Rect from "../../utils/geometry/rect";
 import {
     angle, distSq, isPointInRect, lineIntersection,
@@ -11,7 +10,7 @@ export default class BoardPath extends BoardItem {
     public type = BoardItemType.Path;
     public rect = Rect.invertedInfinite();
 
-    constructor(createdBy : Id, public points : Point[] = [], public color : number, public weight : number = 2) {
+    constructor(createdBy : string, public points : Point[] = [], public color : number, public weight : number = 2) {
         super(createdBy);
     }
 
@@ -68,7 +67,7 @@ export default class BoardPath extends BoardItem {
 
     isInRect(rect : Rect) : boolean {
         for (const p of this.points)
-            if (isPointInRect(p.x * this.rect.w + this.rect.x, p.y * this.rect.h + this.rect.y, rect.x, rect.y, rect.w, rect.h))
+            if (isPointInRect(new Point(p.x * this.rect.w + this.rect.x, p.y * this.rect.h + this.rect.y), rect))
                 return true;
 
         for (let i = 1; i < this.points.length; i++)

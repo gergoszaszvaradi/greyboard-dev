@@ -22,6 +22,10 @@ export default class Rect {
     static invertedInfinite() : Rect {
         return new Rect(Infinity, Infinity, -Infinity, -Infinity);
     }
+
+    static fromTwoPoints(a : Point, b : Point) : Rect {
+        return new Rect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y));
+    }
 }
 
 export class MinMaxRect {

@@ -25,7 +25,7 @@ class ToolboxActions {
     constructor() {
         this.toolbox = Container.get<Toolbox>(Toolbox);
         this.toolbox.onToolSelected.add((tool) => ToolboxStore.setState({ ...ToolboxStore.state, selectedTool: tool }));
-        this.toolbox.onColorSelected.add((index) => ToolboxStore.setState({ ...ToolboxStore.state, selectedColorIndex: index }));
+        this.toolbox.onColorSelected.add((color, index) => ToolboxStore.setState({ ...ToolboxStore.state, selectedColor: color, selectedColorIndex: index }));
         this.toolbox.onWeightSelected.add((weight) => ToolboxStore.setState({ ...ToolboxStore.state, selectedWeight: weight }));
         ToolboxStore.setState({
             tools: this.toolbox.tools,

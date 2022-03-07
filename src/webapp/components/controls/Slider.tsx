@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import Id from "../../../common/utils/id";
+import generateId from "../../../common/utils/id";
 
 import styles from "./Slider.module.scss";
 
@@ -17,7 +17,7 @@ const Slider : React.FC<SliderProps> = ({
     label, min, max, step, startValue, showValue, onInput,
 }) : ReactElement => {
     const [value, setValue] = useState(startValue);
-    const id = new Id();
+    const id = generateId();
 
     return (
         <div className={styles.slider}>

@@ -1,23 +1,24 @@
 import ByteBuffer from "../utils/bytebuffer";
 import Point from "../utils/geometry/point";
 import Rect, { MinMaxRect } from "../utils/geometry/rect";
-import Id from "../utils/id";
+import generateId from "../utils/id";
 
 export enum BoardItemType {
     None = 0,
     Path,
+    Rectangle,
 }
 
 export class BoardItem {
     public type : BoardItemType = BoardItemType.None;
-    public id : Id = new Id();
+    public id : string = generateId();
     public rect : Rect = new Rect();
     public cell : MinMaxRect = new MinMaxRect();
     public label : string | null = null;
     public locked = false;
-    public zIndex = 0;
+    public zIndex = 1;
 
-    constructor(public createdBy : Id) {}
+    constructor(public createdBy : string) {}
 
     isInRect(rect : Rect) : boolean { return false; }
     isInLine(a : Point, b : Point) : boolean { return false; }

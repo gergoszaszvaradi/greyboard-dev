@@ -116,8 +116,6 @@ export default class Input implements Service {
     }
 
     processKeyEvent(e : KeyboardEvent, state : EventActionState) : void {
-        e.preventDefault();
-
         const event = new KeyEvent(e.key, this.getModifiersFromEvent(e));
 
         if (state === EventActionState.Pressed) {
@@ -128,8 +126,12 @@ export default class Input implements Service {
             this.onKeyReleased(event);
         }
 
+        if (document.activeElement?.tagName === "INPUT")
+            return;
+
         for (const shortcut of this.shortcuts)
             if (event.key === shortcut.key && (!event.modifiers || event.modifiers === shortcut.modifiers)) {
+                e.preventDefault();
                 this.onShortcutFired(shortcut);
                 shortcut.action();
             }

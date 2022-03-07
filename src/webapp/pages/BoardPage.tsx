@@ -11,8 +11,8 @@ import ToolbarText from "../components/toolbar/ToolbarText";
 import app from "../core/app";
 import ToolbarInput from "../components/toolbar/ToolbarInput";
 import ToolbarDivider from "../components/toolbar/ToolbarDivider";
-import Tooltip from "../components/data/Tooltip";
-import { Tool } from "../core/services/toolbox";
+import Tooltip, { TooltipOrientation } from "../components/data/Tooltip";
+import { Tool, ToolCategory } from "../core/services/toolbox";
 import { useStore } from "../utils/flux";
 import { ToolboxAction, ToolboxStore } from "../stores/ToolboxStore";
 import { BoardAction, BoardStore } from "../stores/BoardStore";
@@ -22,6 +22,7 @@ import ExpandableToolbar from "../components/toolbar/ExpandableToolbar";
 import Slider from "../components/controls/Slider";
 import ToolbarColorButton from "../components/toolbar/ToolbarColorButton";
 import ColorPicker from "../components/controls/ColorPicker";
+import ToolbarPopup from "../components/toolbar/ToolbarPopup";
 
 interface BoardPageParams {
     id : string;
@@ -35,6 +36,7 @@ const BoardPage : React.FC = () : ReactElement => {
     useEffect(() : () => void => {
         app.start(params.id);
         BoardAction.setBoardId(params.id);
+        BoardAction.setBoardName("New Board");
         return () : void => {
             app.stop();
         };
@@ -42,7 +44,7 @@ const BoardPage : React.FC = () : ReactElement => {
 
     const toolHierarchy = groupBy(toolbox.tools, (tool) => tool.category);
 
-    const toolBarButtonsFromTools = (tools : Tool[]) : ReactElement[] => tools.map((tool) => (
+    const toolBarButtonsFromTools = (tools : Tool[], tooltipOrientation? : TooltipOrientation) : ReactElement[] => tools.map((tool) => (
         <ToolbarButton
             key={tool.name}
             active={toolbox.selectedTool === tool}
@@ -51,11 +53,18 @@ const BoardPage : React.FC = () : ReactElement => {
                 <Tooltip
                     text={tool.name}
                     shortcut={shortcutAsString(tool.shortcut)}
+                    orientation={tooltipOrientation}
                 /> : undefined
             )}
             onClick={() : void => ToolboxAction.setSelectedTool(tool)}
         />
     ));
+
+    const toolbarPopupFromCategoryAndTools = (categoty : ToolCategory, tools : Tool[]) : ReactElement => (
+        <ToolbarPopup icon={categoty.icon} width={80} active={tools.some((tool) => toolbox.selectedTool === tool)}>
+            {toolBarButtonsFromTools(tools, "top")}
+        </ToolbarPopup>
+    );
 
     return (
         <>
@@ -63,7 +72,7 @@ const BoardPage : React.FC = () : ReactElement => {
             <div className={styles.ui}>
                 <div className={`${styles.topBar} flex h h-spaced`}>
                     <Toolbar orientation="horizontal">
-                        <ToolbarInput id="board-title" value="New Board" placeholder="" />
+                        <ToolbarInput id="board-title" value={board.name} placeholder="" onChanged={(value) : void => BoardAction.setBoardName(value)}/>
                         <ToolbarDivider orientation="vertical" />
                         <ToolbarButton icon={mdiContentSave} tooltip={<Tooltip text="Save" shortcut="CTRL + S" orientation="bottom" />} />
                         <ToolbarButton icon={mdiExport} tooltip={<Tooltip text="Export" shortcut="CTRL + E" orientation="bottom" />} />
@@ -75,8 +84,8 @@ const BoardPage : React.FC = () : ReactElement => {
                 <div className={styles.middleBar}>
                     <Toolbar orientation="vertical">
                         {Array.from(toolHierarchy.entries()).map(([category, tools]) => {
-                            if (category)
-                                return toolBarButtonsFromTools(tools);
+                            if (category && tools.length > 1)
+                                return toolbarPopupFromCategoryAndTools(category, tools);
 
                             return toolBarButtonsFromTools(tools);
                         })}

@@ -7,7 +7,7 @@ import Color from "../../../common/utils/color";
 
 @Injectable(Lifetime.Singleton)
 export default class Graphics implements Service {
-    public onRender = createDelegate<[]>();
+    public onRender = createDelegate<[time : number]>();
 
     protected canvas : HTMLCanvasElement | null = null;
     protected inUse = false;
@@ -25,7 +25,7 @@ export default class Graphics implements Service {
         this.inUse = true;
         this.viewport.reset();
 
-        this.onAnimationFrame();
+        this.onAnimationFrame(0);
     }
 
     stop() : void {
@@ -106,7 +106,7 @@ export default class Graphics implements Service {
             return;
 
         this.ctx.beginPath();
-        this.ctx.ellipse(x, y, w, h, 0, 0, 360);
+        this.ctx.ellipse(x + w / 2, y + h / 2, w / 2, h / 2, 0, 0, 360);
         if (filled)
             this.ctx.fill(); else
             this.ctx.stroke();
@@ -228,11 +228,11 @@ export default class Graphics implements Service {
         return this.canvas.toDataURL("application/octet-stream");
     }
 
-    private onAnimationFrame() : void {
+    private onAnimationFrame(time : number) : void {
         if (!this.inUse)
             return;
         this.clear();
-        this.onRender();
+        this.onRender(time);
         window.requestAnimationFrame(this.onAnimationFrame.bind(this));
     }
 }

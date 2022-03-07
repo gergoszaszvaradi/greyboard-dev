@@ -1,4 +1,5 @@
 import Point from "./point";
+import Rect from "./rect";
 
 export function angle(a : Point, b : Point) : number {
     const t = (Math.atan2(a.y - b.y, b.x - a.x) * 180) / Math.PI;
@@ -21,14 +22,18 @@ export function lineIntersection(x1 : number, y1 : number, x2 : number, y2 : num
     return ((t >= 0 && t <= 1) && (u >= -1 && u <= 0));
 }
 
-export function rectIntersection(x1 : number, y1 : number, w1 : number, h1 : number, x2 : number, y2 : number, w2 : number, h2 : number) : boolean {
-    return (!(x2 > x1 + w1 || x2 + w2 < x1 || y2 > y1 + h1 || y2 + h2 < y1));
+export function rectIntersection(a : Rect, b : Rect) : boolean {
+    return (!(b.x > a.x2 || b.x2 < a.x || b.y > a.y2 || b.y2 < a.y));
 }
 
-export function isPointInRect(px : number, py : number, x : number, y : number, w : number, h : number) : boolean {
-    return (px > x && px < x + w && py > y && py < y + h);
+export function isPointInRect(p : Point, rect : Rect) : boolean {
+    return (p.x > rect.x && p.x < rect.x2 && p.y > rect.y && p.y < rect.y2);
 }
 
-export function isLineInRect(lx1 : number, ly1 : number, lx2 : number, ly2 : number, x : number, y : number, w : number, h : number) : boolean {
-    return (isPointInRect(lx1, ly1, x, y, w, h) || isPointInRect(lx2, ly2, x, y, w, h));
+export function isPointInEllipse(p : Point, c : Point, dx : number, dy : number) : boolean {
+    return ((p.x - c.x) * (p.x - c.x)) / (dx * dx) + ((p.y - c.y) * (p.y - c.y)) / (dy * dy) <= 1;
+}
+
+export function isLineInRect(l1 : Point, l2 : Point, rect : Rect) : boolean {
+    return (isPointInRect(l1, rect) || isPointInRect(l2, rect));
 }

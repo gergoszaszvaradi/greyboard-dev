@@ -54,6 +54,10 @@ export default class Viewport implements Service {
         return new Point((this.position.x + p.x) * this.scale, (this.position.y + p.y) * this.scale);
     }
 
+    pixelsToViewport(pixels : number) : number {
+        return pixels / this.scale;
+    }
+
     getScreenRect() : Rect {
         return new Rect(-this.position.x, -this.position.y, window.innerWidth / this.scale, window.innerHeight / this.scale);
     }

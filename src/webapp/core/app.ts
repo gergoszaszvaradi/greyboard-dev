@@ -1,3 +1,4 @@
+import tweenjs from "@tweenjs/tween.js";
 import Size from "../../common/utils/geometry/size";
 import createDelegate from "../../common/utils/delegate";
 import { Container } from "../../common/core/di";
@@ -5,7 +6,7 @@ import Graphics from "./services/graphics";
 import { Toolbox } from "./services/toolbox";
 import ClientBoard from "./services/board";
 import Input, {
-    EventActionState, MouseButton,
+    EventActionState, KeyModifiers, MouseButton,
 } from "./services/input";
 import Pencil from "./tools/pencil";
 import Eraser from "./tools/eraser";
@@ -13,6 +14,11 @@ import View from "./tools/view";
 import Viewport from "./services/viewport";
 
 import "./services/webgl2/graphics";
+import Marker from "./tools/marker";
+import Rectangle from "./tools/shapes/rectangle";
+import FilledRectangle from "./tools/shapes/filledRectangle";
+import Ellipse from "./tools/shapes/ellipse";
+import FilledEllipse from "./tools/shapes/filledEllipse";
 
 class Application {
     public id : string | null = null;
@@ -28,8 +34,13 @@ class Application {
     ) {
         this.toolbox.tools = [
             new Pencil(this.graphics, this.viewport, this.toolbox, this.board),
-            new Eraser(this.graphics, this.viewport),
-            new View(this.viewport, this.toolbox),
+            new Marker(this.graphics, this.viewport, this.toolbox, this.board),
+            new Eraser(this.graphics, this.viewport, this.board),
+            new Rectangle(this.graphics, this.viewport, this.toolbox, this.board),
+            new FilledRectangle(this.graphics, this.viewport, this.toolbox, this.board),
+            new Ellipse(this.graphics, this.viewport, this.toolbox, this.board),
+            new FilledEllipse(this.graphics, this.viewport, this.toolbox, this.board),
+            new View(this.viewport, this.input, this.toolbox),
         ];
         [this.toolbox.selectedTool] = this.toolbox.tools;
     }
@@ -44,10 +55,16 @@ class Application {
             if (tool.shortcut)
                 this.input.registerShortcut(tool.shortcut, () => this.toolbox.selectTool(tool));
         });
+        for (let i = 1; i <= 6; i++)
+            this.input.registerShortcut({
+                key: i.toString(),
+                modifiers: KeyModifiers.Control,
+            }, () => this.toolbox.selectColor(i - 1));
 
-        this.graphics.onRender.add(() => {
+        this.graphics.onRender.add((time) => {
+            tweenjs.update(time);
             this.board.draw();
-            this.toolbox.selectedTool.onFrameUpdate();
+            this.toolbox.selectedTool.onFrameUpdate(time);
             this.toolbox.selectedTool.onDraw();
         });
 

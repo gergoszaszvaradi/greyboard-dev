@@ -12,6 +12,7 @@ globals:
   CanvasImageSource: true
   CanvasTextAlign: true
   CanvasTextBaseline: true
+  GlobalEventHandlersEventMap: true
 settings:
   react:
     version: "detect"

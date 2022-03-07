@@ -16,11 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-<<<<<<< HEAD
           ref: ${{ github.event.workflow_run.head_sha }}
-=======
-          ref: ${{ github.event.workflow_run.head_branch }}
->>>>>>> workflows
       
       - name: Deploy to Development
         if: github.event.workflow_run.conclusion == 'success'

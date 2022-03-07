@@ -1,4 +1,4 @@
-import { mdiShape } from "@mdi/js";
+import { mdiHandBackRight, mdiShape } from "@mdi/js";
 import createDelegate from "../../../common/utils/delegate";
 import Color from "../../../common/utils/color";
 import { PointerEvent, Shortcut } from "./input";
@@ -6,6 +6,7 @@ import { Injectable, Lifetime, Service } from "../../../common/core/di";
 
 export class ToolCategory {
     public static Shapes = new ToolCategory("Shapes", mdiShape);
+    public static Controls = new ToolCategory("Controls", mdiHandBackRight);
 
     constructor(public name : string, public icon : string) {}
 }
@@ -22,7 +23,7 @@ export interface Tool {
     onActionPointerMove(e : PointerEvent) : void;
     onActionEnd(e : PointerEvent) : void;
     onPointerMove(e : PointerEvent) : void;
-    onFrameUpdate() : void;
+    onFrameUpdate(time : number) : void;
     onDraw() : void;
 }
 
@@ -36,7 +37,7 @@ export class Toolbox implements Service {
     public selectedWeight : number;
 
     public onToolSelected = createDelegate<[tool: Tool, prevTool? : Tool]>();
-    public onColorSelected = createDelegate<[color: number]>();
+    public onColorSelected = createDelegate<[color: number, index: number]>();
     public onWeightSelected = createDelegate<[weight: number]>();
 
     public isActionStarted = false;
@@ -97,7 +98,7 @@ export class Toolbox implements Service {
 
     selectColor(index : number) : void {
         this.selectedColorIndex = index;
-        this.onColorSelected(this.colors[index]);
+        this.onColorSelected(this.colors[index], index);
     }
 
     setColor(color : number) : void {

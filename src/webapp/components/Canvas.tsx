@@ -1,13 +1,17 @@
 import React, { ReactElement } from "react";
 import Input, { EventActionState } from "../core/services/input";
 import { BoardStore } from "../stores/BoardStore";
-import useInjectable from "../utils/di";
+import { useGlobalEventListener, useInjectable } from "../utils/hooks";
 import { useStore } from "../utils/flux";
 import { px } from "../utils/format";
 
 const Canvas : React.FC = () : ReactElement => {
     const board = useStore(BoardStore);
     const input = useInjectable<Input>(Input);
+
+    useGlobalEventListener("keydown", (e) => input.processKeyEvent(e, EventActionState.Pressed));
+    useGlobalEventListener("keyup", (e) => input.processKeyEvent(e, EventActionState.Released));
+
     return (
         <canvas
             style={{

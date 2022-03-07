@@ -17,4 +17,8 @@ export default class Color {
     static RgbaToUint(...color : [number, number, number, number]) : number {
         return ((color[0] << 24) + (color[1] << 16) + (color[2] << 8) + color[3]) >>> 0;
     }
+
+    static withAlpha(color : number, alpha : number) : number {
+        return ((color & 0xFFFFFF00) >>> 0) + alpha;
+    }
 }
