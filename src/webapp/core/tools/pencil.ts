@@ -1,8 +1,8 @@
 import { mdiPencil } from "@mdi/js";
 import { clear } from "../../../common/utils/array";
-import { Tool, Toolbox } from "../services/toolbox";
+import { Tool, Toolbox, ToolCategory } from "../services/toolbox";
 import Point from "../../../common/utils/geometry/point";
-import { PointerEvent } from "../services/input";
+import { PointerEvent, Shortcut } from "../services/input";
 import ClientBoardPath from "../board/path";
 import Graphics from "../services/graphics";
 import Viewport from "../services/viewport";
@@ -18,9 +18,9 @@ export default class Pencil implements Tool {
         private readonly toolbox : Toolbox,
         private readonly board : ClientBoard,
         public name = "Pencil",
-        public category = null,
+        public category : ToolCategory | null = null,
         public icon = mdiPencil,
-        public shortcut = { key: "b" },
+        public shortcut : Shortcut = { key: "b" },
     ) {}
 
     onSelected() : void {

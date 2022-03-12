@@ -19,6 +19,8 @@ import Rectangle from "./tools/shapes/rectangle";
 import FilledRectangle from "./tools/shapes/filledRectangle";
 import Ellipse from "./tools/shapes/ellipse";
 import FilledEllipse from "./tools/shapes/filledEllipse";
+import Line from "./tools/shapes/line";
+import ArrowPencil from "./tools/shapes/arrowPencil";
 
 class Application {
     public id : string | null = null;
@@ -40,6 +42,8 @@ class Application {
             new FilledRectangle(this.graphics, this.viewport, this.toolbox, this.board),
             new Ellipse(this.graphics, this.viewport, this.toolbox, this.board),
             new FilledEllipse(this.graphics, this.viewport, this.toolbox, this.board),
+            new Line(this.graphics, this.viewport, this.toolbox, this.board),
+            new ArrowPencil(this.graphics, this.viewport, this.toolbox, this.board),
             new View(this.viewport, this.input, this.toolbox),
         ];
         [this.toolbox.selectedTool] = this.toolbox.tools;

@@ -5,7 +5,7 @@ import { isPointInRect, rectIntersection } from "../../utils/geometry/geometry";
 import { BoardItem, BoardItemType } from "../board";
 
 export default class BoardEllipse extends BoardItem {
-    public type = BoardItemType.Path;
+    public type = BoardItemType.Ellipse;
 
     constructor(createdBy : string, public rect : Rect, public color : number, public weight : number = 2, public filled : boolean = false) {
         super(createdBy);

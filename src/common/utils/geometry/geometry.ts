@@ -1,6 +1,10 @@
 import Point from "./point";
 import Rect from "./rect";
 
+export function angleInRadians(a : Point, b : Point) : number {
+    return Math.atan2(a.y - b.y, b.x - a.x);
+}
+
 export function angle(a : Point, b : Point) : number {
     const t = (Math.atan2(a.y - b.y, b.x - a.x) * 180) / Math.PI;
     return (t < 0) ? 360 + t : t;

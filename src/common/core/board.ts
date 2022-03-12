@@ -7,6 +7,8 @@ export enum BoardItemType {
     None = 0,
     Path,
     Rectangle,
+    Ellipse,
+    Arrow,
 }
 
 export class BoardItem {

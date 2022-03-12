@@ -130,10 +130,11 @@ export default class Input implements Service {
             return;
 
         for (const shortcut of this.shortcuts)
-            if (event.key === shortcut.key && (!event.modifiers || event.modifiers === shortcut.modifiers)) {
+            if (event.key.toLowerCase() === shortcut.key.toLowerCase() && ((!shortcut.modifiers && event.modifiers === KeyModifiers.None) || event.modifiers === shortcut.modifiers)) {
                 e.preventDefault();
                 this.onShortcutFired(shortcut);
                 shortcut.action();
+                break;
             }
     }
 
